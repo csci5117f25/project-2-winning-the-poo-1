@@ -36,7 +36,16 @@ Which (if any) progressive web app feature(s) does your app support?
 **[figma link](https://www.figma.com/design/f5O2zPnP74uuB6rprvaIf3/Omni-Backlog-Mockup?node-id=0-1&p=f&t=NM2DdKMheUGqqBlx-0)**
 
 ![Splash Page (desktop + mobile)](/mockupPics/Splash.png "Splash Page (desktop + mobile)")
+Splash Page (desktop + mobile)
 
+![Dashboard Page (desktop + mobile)](/mockupPics/Dashboard.png "Dashboard Page (desktop + mobile)")
+Dashboard Page (desktop + mobile)
+
+![Profile Page (desktop + mobile)](/mockupPics/Profile.png "Profile Page (desktop + mobile)")
+Profile Page (desktop + mobile)
+
+![Search Page (desktop + mobile)](/mockupPics/Search.png "Search Page (desktop + mobile)")
+Search Page (desktop + mobile)
 
 ## Testing Notes
 
