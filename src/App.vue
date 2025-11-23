@@ -37,9 +37,11 @@ async function login() {
   } catch {
     alert("oh no");
   }
-}async function logout() {
+}
+
+async function logout() {
   try {
-    const result = await signOut(auth)
+    await signOut(auth)
   } catch {
     alert("oh no");
   }
@@ -77,7 +79,7 @@ async function login() {
   float: left;
   width: 40vw;
   display: flex;
-  justify-content: space-evenly; 
+  justify-content: space-evenly;
   margin: 10px;
 }
 .nav{
