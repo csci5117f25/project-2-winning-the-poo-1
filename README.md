@@ -4,13 +4,13 @@ CSCI 5117, Fall 2025, [assignment description](https://canvas.umn.edu/courses/51
 
 ## App Info:
 
-* Team Name: TODO
+* Team Name: winning the poo
 * App Name: TODO
 * App Link: <https://TODO.com/>
 
 ### Students
 
-* First Last, x500@umn.edu
+* wendy meng, meng0219@umn.edu
 * ...
 
 
