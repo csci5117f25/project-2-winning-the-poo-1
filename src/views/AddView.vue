@@ -7,5 +7,5 @@ import MediaSearch from '../components/MediaSearch.vue'
     <MediaSearch/>
 </template>
 
-<style scope>
+<style scoped>
 </style>

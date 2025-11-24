@@ -13,7 +13,7 @@
   </section>
 </template>
 
-<style scope>
+<style scoped>
 .splash-container {
   padding: 100px;
   display: flex;

@@ -18,6 +18,7 @@ async function createUserIfNotExists(user) {
       id: user.uid,
       email: user.email,
       displayName: user.displayName || null,
+      photoURL: user.photoURL || null,
       createdAt: new Date()
     })
     console.log('User added')
@@ -56,6 +57,7 @@ async function logout() {
     <div class="loginout">
       <button @click="login()" class="logMenu" v-if="!user">Login/Signup</button>
       <button @click="logout()" class="logMenu" v-else>Logout</button>
+      <RouterLink to="/profile" class="nav">Profile</RouterLink>
     </div>
   </div>
 </template>
