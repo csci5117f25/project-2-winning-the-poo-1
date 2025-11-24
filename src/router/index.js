@@ -5,6 +5,7 @@ import HomeView from '@/views/HomeView.vue'
 import CategoriesView from '@/views/CategoriesView.vue'
 import ListView from '@/views/ListView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import MediaId from '@/views/MediaId.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,12 @@ const router = createRouter({
     path: '/profile', 
     component: ProfileView, 
     meta: { requiresAuth: true } 
+  },
+  {
+    path: '/media/:id',
+    name: 'media_w_id',
+    component: MediaId,
+    meta: { requiresAuth: true }
   }
   ],
 })

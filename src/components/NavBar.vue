@@ -2,7 +2,7 @@
 import { RouterLink } from 'vue-router'
 import { useCurrentUser, useFirebaseAuth } from 'vuefire'
 import { db, provider } from '@/firebase_conf'
-import { getDoc, doc, setDoc } from 'firebase/firestore'
+import { getDoc, doc, setDoc, collection } from 'firebase/firestore'
 import { signInWithPopup, signOut } from 'firebase/auth'
 
 const user = useCurrentUser()
@@ -14,6 +14,8 @@ async function createUserIfNotExists(user) {
   const userSnap = await getDoc(userRef)
 
   if (!userSnap.exists()) {
+
+    // Create user document
     await setDoc(userRef, {
       id: user.uid,
       email: user.email,
@@ -21,11 +23,54 @@ async function createUserIfNotExists(user) {
       photoURL: user.photoURL || null,
       createdAt: new Date()
     })
+
     console.log('User added')
+
+    const queueRef = collection(userRef, "queue")
+    const incepRef = doc(queueRef)
+    const infWarRef = doc(queueRef)
+    const tangledRef = doc(queueRef)
+    const frozenRef = doc(queueRef)
+
+    await setDoc(incepRef, {
+      name: "Inception",
+      category: "movie",
+      time: 2.5,
+      status: "in-progress",
+      added: new Date()
+    })
+
+    await setDoc(infWarRef, {
+      name: "Avengers: Infinity War",
+      category: "movie",
+      time: 2.4,
+      status: "queued",
+      added: new Date()
+    })
+
+    await setDoc(tangledRef, {
+      name: "Tangled",
+      category: "movie",
+      time: 1.6,
+      status: "queued",
+      added: new Date()
+    })
+
+    await setDoc(frozenRef, {
+      name: "Frozen",
+      category: "movie",
+      time: 1.5,
+      status: "in-progress",
+      added: new Date()
+    })
+
+    console.log("defaults added")
+
   } else {
     console.log('User already exists')
   }
 }
+
 
 async function login() {
   try {
