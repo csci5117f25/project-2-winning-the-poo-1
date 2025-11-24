@@ -49,9 +49,6 @@ async function logout() {
 </script>
 
 <template>
-  <main>
-    <RouterView />
-  </main>
   <div class="menu">
     <div class="links">
       <RouterLink to="/" class="home">MEDIAQ</RouterLink>
@@ -64,6 +61,10 @@ async function logout() {
       <button @click="logout()" class="logMenu" v-else>Logout</button>
     </div>
   </div>
+  <main>
+    <p>Content should show here</p>
+    <RouterView/>
+  </main>
 </template>
 
 <style scoped>
