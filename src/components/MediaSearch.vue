@@ -8,15 +8,15 @@ const query = ref('');
 const results = ref([]);
 
 const search = async () => {
-  if (!search.value) {
+  if (!query.value) {
     return;
   }
 
   try {
-    const data = await tmdbService.searchMovies(search.value);
+    const data = await tmdbService.searchMovies(query.value);
     results.value = data.results;
   } catch (error) {
-    console.error("Search error");
+    console.error("Search error:", error);
   }
 };
 
@@ -38,12 +38,13 @@ const addtoBacklog = async (movieData) => {
       time_to_finish: details.runtime,
     }
 
+    // figure out backlog data storage
     // const userItems = collection(db, 'users', user.uid, 'items');
     // await addDoc(userItems, backlogItem);
 
     alert(`${details.title} added to list!`);
   } catch(error) {
-    alert("Failed to add movie");
+    alert("Failed to add movie:", error);
   }
 }
 </script>
@@ -58,6 +59,7 @@ const addtoBacklog = async (movieData) => {
     <div v-for="movie in results" :key="movie.id" class="movie-card">
       <div class="movie-info">
         <h2>{{  movie.title  }}</h2>
+        <img :src="`https://image.tmdb.org/t/p/w200${movie.poster_path}`" alt="Poster Image"/>
         <button @click="addtoBacklog(movie)">Add to Backlog</button>
       </div>
     </div>
