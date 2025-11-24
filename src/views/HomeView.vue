@@ -4,8 +4,8 @@
 <template>
     <div class="top">
         <h1>MEDIAQ</h1>
-        <p>Never lose your place in the queue again</p>
-    
+        <p>Never lose track of your own backlog again!</p>
+
     </div>
     <div class="bottom">
 
