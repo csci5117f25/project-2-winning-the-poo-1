@@ -5,5 +5,5 @@
     <h1>Categories</h1>
 </template>
 
-<style scope>
+<style scoped>
 </style>

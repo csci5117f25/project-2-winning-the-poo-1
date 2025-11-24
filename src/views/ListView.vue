@@ -33,5 +33,5 @@ getQueue(user.value)
     <h1>List</h1>
 </template>
 
-<style scope>
+<style scoped>
 </style>

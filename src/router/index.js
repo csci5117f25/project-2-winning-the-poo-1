@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { auth } from '../firebase_conf'
-import AddView from '@/views/addView.vue'
+import AddView from '@/views/AddView.vue'
 import HomeView from '@/views/HomeView.vue'
 import CategoriesView from '@/views/CategoriesView.vue'
 import ListView from '@/views/ListView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,10 +24,15 @@ const router = createRouter({
     meta: { requiresAuth: true } 
   },
   { 
-    path: '/List', 
+    path: '/list', 
     component: ListView, 
     meta: { requiresAuth: true } 
   },
+  { 
+    path: '/profile', 
+    component: ProfileView, 
+    meta: { requiresAuth: true } 
+  }
   ],
 })
 

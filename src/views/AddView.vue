@@ -5,5 +5,5 @@
     <h1>Add Item</h1>
 </template>
 
-<style scope>
+<style scoped>
 </style>
