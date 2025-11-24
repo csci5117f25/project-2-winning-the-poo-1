@@ -2,30 +2,28 @@
 </script>
 
 <template>
-    <div class="top">
+  <section class="splash-container">
+    <div class="splash">
         <h1>MEDIAQ</h1>
         <p>Never lose track of your own backlog again!</p>
-
     </div>
     <div class="bottom">
 
     </div>
+  </section>
 </template>
 
 <style scope>
-.top{
-    background-color: gainsboro;
-    height: 50vh;
-    width: 100dvw;
-    left: 0px;
-    right: 0px;
-    align-items: center;
+.splash-container {
+  padding: 100px;
+  display: flex;
+  flex-direction: column;
 }
-.bottom{
-    background-color: white;
-    height: 40vh;
-    width: 100dvw;
-    left: 0px;
-    right: 0px;
+
+.splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 </style>
