@@ -20,5 +20,8 @@ export default {
   },
   getMovieDetails(id) {
     return requestTMDB(`/movie/${id}`)
+  },
+  getTrendingMovies() {
+    return requestTMDB(`/trending/movie/week`)
   }
 }

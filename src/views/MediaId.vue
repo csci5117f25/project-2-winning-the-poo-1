@@ -24,6 +24,12 @@ watch(MediaItem, (newVal) => {
 
 <template>
     <h1>{{ MediaItem.name }}</h1>
+    <img v-if="MediaItem.image_url" :src="MediaItem.image_url" alt="Cover Image" class="card-img"/>
+    <p>Release Date: {{ MediaItem.release_date }}</p>
+    <p>Runtime: {{ MediaItem.time }} minutes</p>
+    <p>Overview:</p>
+    <p>{{ MediaItem.overview }}</p>
+    <p>Average Rating: {{ MediaItem.rating }}</p>
 </template>
 
 <style scoped>

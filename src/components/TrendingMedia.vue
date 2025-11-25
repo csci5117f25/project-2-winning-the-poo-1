@@ -1,24 +1,23 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import tmdbService from '../api/tmdb';
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase_conf'
 
-const query = ref('');
 const results = ref([]);
 
-const search = async () => {
-  if (!query.value) {
-    return;
-  }
-
+const getTrending = async () => {
   try {
-    const data = await tmdbService.searchMovies(query.value);
+    const data = await tmdbService.getTrendingMovies();
     results.value = data.results;
   } catch (error) {
-    console.error("Search error:", error);
+    console.error("Trending movies search error:", error);
   }
 };
+
+onMounted(() => {
+  getTrending();
+})
 
 const addtoBacklog = async (movieData) => {
   const user = auth.currentUser;
@@ -52,12 +51,7 @@ const addtoBacklog = async (movieData) => {
 </script>
 
 <template>
-<div class="search-container">
-  <div class="search-bar">
-    <input v-model="query" @keyup.enter="search" placeholder="Search..." type="text"/>
-    <button @click="search">Search</button>
-  </div>
-  <div v-if="results.length" class="results-display">
+<div v-if="results.length" class="results-display">
     <div v-for="movie in results" :key="movie.id" class="movie-card">
       <div class="movie-info">
         <h2>{{  movie.title  }}</h2>
@@ -66,10 +60,18 @@ const addtoBacklog = async (movieData) => {
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <style scoped>
+.results-display {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-x: visible;
+  justify-content: center;
+  gap: 2em;
+}
+
 .movie-info {
   display: flex;
   flex-direction: column;
