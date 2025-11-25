@@ -1,8 +1,5 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import { useCurrentUser, useFirebaseAuth } from 'vuefire'
-import { db } from './firebase_conf'
-import { getDoc, doc, setDoc } from 'firebase/firestore'
+import { RouterView } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 </script>
 
