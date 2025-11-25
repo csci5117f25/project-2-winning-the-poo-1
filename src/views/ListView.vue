@@ -2,11 +2,13 @@
 import { useCurrentUser, useCollection } from 'vuefire'
 import { db } from '../firebase_conf'
 import { collection, query, where } from 'firebase/firestore'
+import { computed } from 'vue'
 
 const user = useCurrentUser()
 
 let inProgress = null
 let queue = null
+
 
 if (user.value) {
   const queueRef = collection(db, 'users', user.value.uid, 'queue')
@@ -16,7 +18,17 @@ if (user.value) {
 
   const queueQuery = query(queueRef, where("status", "==", "queued"))
   queue = useCollection(queueQuery)
+
 }
+
+const timeLeftProg = computed(() => //I thought this needed curly brackets? idk man
+  inProgress?.value.reduce((accumulator, item) => accumulator + item.time, 0)
+)
+
+const timeLeftQueue = computed(() => //I thought this needed curly brackets? idk man
+  queue?.value.reduce((accumulator, item) => accumulator + item.time, 0)
+)
+
 </script>
 
 <template>
@@ -28,6 +40,9 @@ if (user.value) {
         <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
         <p>{{ item.time }} hours</p>
     </div>
+    <div>
+        <p>Your in-progress items will take you about {{ timeLeftProg }} hours to complete.</p>
+    </div>
   </div>
 
   <p>QUEUE</p>
@@ -36,7 +51,11 @@ if (user.value) {
         <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
         <p>{{ item.time }} hours</p>
     </div>
+      <div>
+        <p>Your queued items will take you about {{ timeLeftQueue }} hours to complete.</p>
+    </div>
   </div>
+
 </template>
 
 <style scoped>
@@ -59,18 +78,18 @@ if (user.value) {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center; 
+    text-align: center;
 }
 .card a {
-    text-decoration: none; 
-    color: black;          
+    text-decoration: none;
+    color: black;
 }
 
 .card:hover {
     cursor: pointer;
-    background-color: gray;   
+    background-color: gray;
     transform: scale(1.1);
-    transition: 0.2s ease;    
+    transition: 0.2s ease;
 }
 .queue{
     gap: 10rem;
