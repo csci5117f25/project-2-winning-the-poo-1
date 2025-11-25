@@ -78,7 +78,7 @@ const deleteMedia = async (itemId) => {
 
     <div>
       <h3>QUEUE</h3>
-      <p v-if="queue.length > 0">Your queued items will take you about <strong>{{ timeLeftQueue }}</strong> minutes to complete.</p>
+      <p v-if="queue.length > 0">Your queued items will take you about <strong>{{ timeLeftQueue }}</strong> hours to complete.</p>
     </div>
     <div class="queue">
       <div v-for="item in queue" :key="item.name" class="card">
