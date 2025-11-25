@@ -10,7 +10,9 @@ import MediaSearch from '../components/MediaSearch.vue'
 </template>
 
 <style scoped>
+
 .search-field {
+  padding: 1rem;
   text-align: center;
 }
 </style>

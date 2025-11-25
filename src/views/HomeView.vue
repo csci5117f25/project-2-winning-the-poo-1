@@ -15,15 +15,20 @@
 
 <style scoped>
 .splash-container {
-  padding: 100px;
+  background-color: rgb(203, 203, 203);
   display: flex;
   flex-direction: column;
 }
 
 .splash {
+  padding: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+h1 {
+  font-weight: bold;
 }
 
 </style>

@@ -92,7 +92,7 @@ async function logout() {
 </script>
 
 <template>
-  <div class="menu">
+  <nav class="menu">
     <div class="links">
       <RouterLink to="/" class="home">MEDIAQ</RouterLink>
       <RouterLink to="/add" class="nav">ADD</RouterLink>
@@ -104,18 +104,21 @@ async function logout() {
       <button @click="logout()" class="logMenu" v-else>Logout</button>
       <RouterLink to="/profile" class="nav">Profile</RouterLink>
     </div>
-  </div>
+  </nav>
 </template>
 
 <style scoped>
+
 .menu{
-  width: 100dvw;
+  padding-left: 1rem;
+  width: 100%;
   height: 60px;
   position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
   background-color: black;
+  z-index: 1000;
 
   display: flex;
   align-items: center;
@@ -153,6 +156,17 @@ async function logout() {
   color: white;
   text-decoration: none;
   margin: 5px;
+  font-weight: bold;
+}
+
+a.nav {
+  transition: 0.2s;
+}
+
+a.nav:hover {
+  background-color: rgb(131, 131, 131);
+  border-radius: 5px;
+  padding: 0.5rem;
 }
 
 </style>

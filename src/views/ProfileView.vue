@@ -20,19 +20,21 @@ const queueTime = computed(() => //I thought this needed curly brackets? idk man
 </script>
 
 <template>
-  <h1>Profile</h1>
-  <h2>Hi, {{ user?.displayName }}</h2>
+  <div>
+    <h1>Profile</h1>
+    <h2>Hi, {{ user?.displayName }}</h2>
 
-  <img
-    :src="user?.photoURL || 'https://via.placeholder.com/150'"
-    alt="Profile Picture"
-  />
+    <img
+      :src="user?.photoURL || 'https://via.placeholder.com/150'"
+      alt="Profile Picture"
+    />
 
-  <h2>STATS</h2>
+    <h2>STATS</h2>
 
-  <h3>{{ inProgressTime }} minutes in-progress</h3>
+    <h3>{{ inProgressTime }} minutes in-progress</h3>
 
-  <h3>{{ queueTime }} minutes queued</h3>
+    <h3>{{ queueTime }} minutes queued</h3>
+  </div>
 </template>
 
 <style scoped>
@@ -41,5 +43,8 @@ img {
   height: 6rem;
   border-radius: 9999px;
   object-fit: cover;
+}
+div {
+  padding: 1rem;
 }
 </style>
