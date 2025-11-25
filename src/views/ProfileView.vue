@@ -20,22 +20,51 @@ const queueTime = computed(() => //I thought this needed curly brackets? idk man
 </script>
 
 <template>
-  <div>
-    <h1>Profile</h1>
-    <h2>Hi, {{ user?.displayName }}</h2>
+  <section class="section">
+    <div class="container">
+      <div class="card">
+        <div class="card-content has-text-centered">
 
-    <img
-      :src="user?.photoURL || 'https://via.placeholder.com/150'"
-      alt="Profile Picture"
-    />
+          <figure class="image is-128x128 is-inline-block mb-4">
+            <img
+              class="is-rounded"
+              :src="user?.photoURL || 'https://via.placeholder.com/150'"
+              alt="Profile Picture"
+            />
+          </figure>
 
-    <h2>STATS</h2>
+          <h1 class="title">Profile</h1>
+          <h2 class="subtitle">Hi, {{ user?.displayName }}</h2>
 
-    <h3>{{ inProgressTime }} minutes in-progress</h3>
+          <hr/>
 
-    <h3>{{ queueTime }} minutes queued</h3>
-  </div>
+          <h2 class="title">Stats</h2>
+
+          <div class="columns is-multiline has-text-centered">
+
+            <div class="column is-half">
+              <div class="box">
+                <p class="heading">In Progress</p>
+                <p class="title">{{ inProgressTime }} min</p>
+              </div>
+            </div>
+
+            <div class="column is-half">
+              <div class="box">
+                <p class="heading">Queued</p>
+                <p class="title">{{ queueTime }} min</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
 </template>
+
 
 <style scoped>
 img {

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import tmdbService from '../api/tmdb';
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase_conf'
+import placeholder from '../assets/no_image.jpg'
 
 const query = ref('');
 const results = ref([]);
@@ -45,30 +46,46 @@ const addtoBacklog = async (movieData) => {
     await addDoc(userItems, backlogItem);
 
     alert(`${details.title} added to list!`);
-  } catch(error) {
+  } catch (error) {
     alert("Failed to add movie:", error);
   }
 }
 </script>
 
 <template>
-<div class="search-container">
-  <div class="search-bar">
-    <input class="search-input" v-model="query" @keyup.enter="search" placeholder="Search for a movie..." type="text"/>
-    <button class="search-btn" @click="search">Search</button>
-  </div>
-</div>
-
-  <div v-if="results.length" class="results-display">
-    <div v-for="movie in results" :key="movie.id" class="movie-card">
-      <div class="movie-info">
-        <h2>{{  movie.title  }}</h2>
-        <img :src="`https://image.tmdb.org/t/p/w200${movie.poster_path}`" alt="Poster Image"/>
-        <button @click="addtoBacklog(movie)">Add to Backlog</button>
-      </div>
+  <div class="search-container">
+    <div class="search-bar">
+      <input class="search-input" v-model="query" @keyup.enter="search" placeholder="Search for a movie..."
+        type="text" />
+      <button class="search-btn" @click="search">Search</button>
     </div>
   </div>
 
+  <div v-if="results.length" class="section">
+    <div class="columns is-multiline">
+      <div v-for="movie in results" :key="movie.id" class="column is-one-quarter-desktop is-half-mobile">
+        <div class="card">
+          <div class="card-image">
+            <a :href="`https://www.themoviedb.org/movie/${movie.id}`" target="_blank" rel="noopener">
+              <figure class="image is-3by4">
+                <img :src="movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+                  : placeholder" alt="Poster Image" />
+              </figure>
+            </a>
+          </div>
+
+          <div class="card-content has-text-centered">
+            <p class="title">{{ movie.title }}</p>
+
+            <button class="button is-primary is-small" @click="addtoBacklog(movie)">
+              Add to Backlog
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -129,5 +146,4 @@ const addtoBacklog = async (movieData) => {
   justify-content: center;
   align-items: center;
 }
-
 </style>
