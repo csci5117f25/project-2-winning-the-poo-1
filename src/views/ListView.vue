@@ -61,13 +61,13 @@ const deleteMedia = async (itemId) => {
 
     <div>
       <h3>IN-PROGRESS</h3>
-      <p v-if="inProgress.length > 0">Your in-progress items will take you about <strong>{{ timeLeftProg }}</strong> minutes to complete.</p>
+      <p v-if="inProgress.length > 0">Your in-progress items will take you about <strong>{{ timeLeftProg }}</strong> hours to complete.</p>
     </div>
     <div class="in-progress">
       <div v-for="item in inProgress" :key="item.name" class="card">
           <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
           <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
-          <p>{{ item.time }} minutes</p>
+          <p>{{ item.time }} hours</p>
           <button class="remove-btn" @click="requeueMedia(item.id)">Stop</button>
       </div>
       <div v-if="inProgress.length === 0">
@@ -84,7 +84,7 @@ const deleteMedia = async (itemId) => {
       <div v-for="item in queue" :key="item.name" class="card">
           <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }" class="card-title">{{ item.name}}</RouterLink>
           <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
-          <p>{{ item.time }} minutes</p>
+          <p>{{ item.time }} hours</p>
           <div class="buttons">
             <button class="card-btn" @click="startMedia(item.id)">Start</button>
             <button class="remove-btn" @click="deleteMedia(item.id)">Remove</button>
