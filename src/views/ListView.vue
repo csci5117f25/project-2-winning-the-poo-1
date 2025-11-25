@@ -1,7 +1,7 @@
 <script setup>
 import { useCurrentUser, useCollection } from 'vuefire'
 import { db } from '../firebase_conf'
-import { collection, query, where } from 'firebase/firestore'
+import { collection, query, where, doc, updateDoc } from 'firebase/firestore'
 import { computed } from 'vue'
 
 const user = useCurrentUser()
@@ -29,6 +29,22 @@ const timeLeftQueue = computed(() => //I thought this needed curly brackets? idk
   queue?.value.reduce((accumulator, item) => accumulator + item.time, 0)
 )
 
+const startMedia = async (itemId) => {
+  const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
+
+  await updateDoc(itemRef, {
+    status: 'in-progress'
+  })
+};
+
+const requeueMedia = async (itemId) => {
+  const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
+
+  await updateDoc(itemRef, {
+    status: 'queued'
+  })
+}
+
 </script>
 
 <template>
@@ -38,22 +54,26 @@ const timeLeftQueue = computed(() => //I thought this needed curly brackets? idk
   <div class="in-progress">
     <div v-for="item in inProgress" :key="item.name" class="card">
         <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
-        <p>{{ item.time }} hours</p>
+        <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
+        <p>{{ item.time }} minutes</p>
+        <button class="card-btn" @click="requeueMedia(item.id)">Stop</button>
     </div>
-    <div>
-        <p>Your in-progress items will take you about {{ timeLeftProg }} hours to complete.</p>
-    </div>
+  </div>
+  <div>
+    <p>Your in-progress items will take you about {{ timeLeftProg }} minutes to complete.</p>
   </div>
 
   <p>QUEUE</p>
   <div class="queue">
     <div v-for="item in queue" :key="item.name" class="card">
         <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
-        <p>{{ item.time }} hours</p>
+        <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
+        <p>{{ item.time }} minutes</p>
+        <button class="card-btn" @click="startMedia(item.id)">Start</button>
     </div>
-      <div>
-        <p>Your queued items will take you about {{ timeLeftQueue }} hours to complete.</p>
-    </div>
+  </div>
+  <div>
+    <p>Your queued items will take you about {{ timeLeftQueue }} minutes to complete.</p>
   </div>
 
 </template>
@@ -71,7 +91,7 @@ const timeLeftQueue = computed(() => //I thought this needed curly brackets? idk
     padding: 10px;
     border-radius: 10px;
     width: 10vw;
-    height: 17vh;
+    height: auto;
     margin: 1rem;
     box-shadow: 0px 8px 28px rgba(0, 0, 0, 0.2);
     display: flex;
@@ -80,6 +100,12 @@ const timeLeftQueue = computed(() => //I thought this needed curly brackets? idk
     align-items: center;
     text-align: center;
 }
+
+.card-img {
+  padding-top: 1em;
+  height: 200px;
+}
+
 .card a {
     text-decoration: none;
     color: black;
@@ -91,13 +117,16 @@ const timeLeftQueue = computed(() => //I thought this needed curly brackets? idk
     transform: scale(1.1);
     transition: 0.2s ease;
 }
-.queue{
-    gap: 10rem;
+.queue {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 10px 0;
 }
-.in-progress::-webkit-scrollbar {
+.in-progress::-webkit-scrollbar, .queue::-webkit-scrollbar {
   height: 6px;
 }
-.in-progress::-webkit-scrollbar-thumb {
+.in-progress::-webkit-scrollbar-thumb, .queue::-webkit-scrollbar-thumb {
   background-color: rgba(0,0,0,0.3);
   border-radius: 3px;
 }

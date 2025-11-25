@@ -1,9 +1,16 @@
 <script setup>
+import MediaSearch from '../components/MediaSearch.vue'
 </script>
 
 <template>
-    <h1>Add Item</h1>
+  <div class="search-field">
+    <h1>Add Media</h1>
+    <MediaSearch/>
+  </div>
 </template>
 
 <style scoped>
+.search-field {
+  text-align: center;
+}
 </style>
