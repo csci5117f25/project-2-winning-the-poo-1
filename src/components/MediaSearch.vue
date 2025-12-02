@@ -104,17 +104,16 @@ const addtoBacklog = async (movieData) => {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   padding: 0.75rem 1rem;
   border-radius: 10px;
-
-
 }
 
 .search-container {
   display: flex;
   justify-content: center;
+  margin: 10px;
 }
 
 .search-bar {
-  width: 50%;
+  width: 50vw;
   display: flex;
   justify-content: center;
   gap: 0.75rem;
@@ -146,4 +145,5 @@ const addtoBacklog = async (movieData) => {
   justify-content: center;
   align-items: center;
 }
+
 </style>

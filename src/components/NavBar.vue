@@ -105,6 +105,40 @@ async function logout() {
       <RouterLink to="/profile" class="nav">Profile</RouterLink>
     </div>
   </nav>
+
+  <nav class="bottom-nav">
+    <RouterLink to="/" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-width="2" d="M3 9.5l9-7 9 7V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/>
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/add" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-width="2" d="M12 5v14m7-7H5"/>
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/categories" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/list" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-width="2" d="M9 5h12M9 12h12M9 19h12M4 5h.01M4 12h.01M4 19h.01"/>
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/profile" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="8" r="4" stroke-width="2" />
+        <path stroke-width="2" d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+      </svg>
+    </RouterLink>
+  </nav>
+
 </template>
 
 <style scoped>
@@ -168,5 +202,46 @@ a.nav:hover {
   border-radius: 5px;
   padding: 0.5rem;
 }
+
+/* no bottom nav on desktop */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  /* hide the desktop nav on mobile */
+  .menu {
+    display: none;
+  }
+
+  /* mobile bottom nav */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: white;
+    border-top: 1px solid #ddd;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+  }
+
+  .bottom-nav .tab {
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+  }
+
+  .icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+  }
+}
+
 
 </style>
