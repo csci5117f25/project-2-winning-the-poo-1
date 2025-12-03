@@ -73,7 +73,6 @@ const deleteMedia = async (itemId) => {
       <div v-if="inProgress.length === 0">
         <p>Start an item</p>
       </div>
-
     </div>
 
     <div>

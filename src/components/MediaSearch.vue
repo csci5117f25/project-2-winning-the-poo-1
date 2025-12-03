@@ -1,12 +1,27 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import tmdbService from '../api/tmdb';
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase_conf'
 import placeholder from '../assets/no_image.jpg'
+//NEW: voice recognition
+import { useSpeechRecognition } from '@vueuse/core';
+
 
 const query = ref('');
 const results = ref([]);
+
+
+//NEW: voice recognition
+const { isListening, result, start, stop } = useSpeechRecognition();
+
+watch(result, (val) => {
+  if(val){
+    query.value = val;
+    search();
+  }
+});
+
 
 const search = async () => {
   if (!query.value) {
@@ -58,6 +73,7 @@ const addtoBacklog = async (movieData) => {
       <input class="search-input" v-model="query" @keyup.enter="search" placeholder="Search for a movie..."
         type="text" />
       <button class="search-btn" @click="search">Search</button>
+      <button class="mic-btn" @click="isListening ? stop() : start()">{{ isListening ? 'Stop Voice Search' : 'Try Voice Search' }}</button>
     </div>
   </div>
 
@@ -122,6 +138,19 @@ const addtoBacklog = async (movieData) => {
 }
 
 .search-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: #15254e;
+  color: white;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mic-btn {
   border: none;
   border-radius: 10px;
   padding: 0.5rem 1rem;
