@@ -43,24 +43,34 @@ const queuedCount = computed(() => {
   }).length
 })
 
+const featuredInProg = computed(() => {
+  const inProg = items.value.filter(item => item.status === 'in-progress')
+  if (inProg.length > 0) {
+    const randIndex = Math.floor(Math.random() * inProg.length)
+    return inProg[randIndex]
+  }
+  return null
+})
+
+
 onMounted(() => {
   gsap.from("#hero-title", {
     opacity: 0,
     y: -30,
     duration: 1
   })
-  gsap.from("#hero-subtitle", { 
-    opacity: 0, 
-    y: -30, 
+  gsap.from("#hero-subtitle", {
+    opacity: 0,
+    y: -30,
     duration: 1,
-    delay: 0.3 
+    delay: 0.3
   })
 
   if (user.value) {
-    gsap.from("#stats-box", { 
-      opacity: 0, 
-      y: 20, 
-      duration: 1, 
+    gsap.from("#stats-box", {
+      opacity: 0,
+      y: 20,
+      duration: 1,
       delay: 0.6 })
   }
 })
@@ -91,6 +101,11 @@ onMounted(() => {
               <p class="heading">Queued</p>
               <p class="title">{{ queuedCount }}</p>
             </div>
+          </div>
+          <!-- display random item in progress -->
+          <div v-if="featuredInProg" class="container">
+            <p>Need a suggestion on what to finish first? Why don't you resume <b>{{ featuredInProg.name }}</b>?</p>
+            <br></br>
           </div>
           <div class="has-text-centered">
             <RouterLink to="/list" class="button is-black is-medium">Go to My List</RouterLink>
