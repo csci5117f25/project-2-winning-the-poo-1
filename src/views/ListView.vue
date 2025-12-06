@@ -37,6 +37,14 @@ const startMedia = async (itemId) => {
   })
 };
 
+const finishMedia = async (itemId) => {
+  const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
+
+  await updateDoc(itemRef, {
+    status: 'complete'
+  })
+};
+
 const requeueMedia = async (itemId) => {
   const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
 
@@ -69,6 +77,7 @@ const deleteMedia = async (itemId) => {
           <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
           <p>{{ item.time }} minutes</p>
           <button class="remove-btn" @click="requeueMedia(item.id)">Stop</button>
+          <button class="complete-btn" @click="finishMedia(item.id)">Mark Complete</button>
       </div>
       <div v-if="inProgress.length === 0">
         <p>Start an item</p>
@@ -193,6 +202,16 @@ h1 {
 
 .remove-btn:hover {
   background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+.complete-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.complete-btn:hover {
+  background-color: #4caf50;
   transform: scale(1.05);
 }
 
