@@ -52,6 +52,15 @@ const featuredInProg = computed(() => {
   return null
 })
 
+const featuredQueue = computed(() => {
+  const queued = items.value.filter(item => item.status === 'queued')
+  if (queued.length > 0) {
+    const randIndex = Math.floor(Math.random() * queued.length)
+    return queued[randIndex]
+  }
+  return null
+})
+
 
 onMounted(() => {
   gsap.from("#hero-title", {
@@ -105,6 +114,10 @@ onMounted(() => {
           <!-- display random item in progress -->
           <div v-if="featuredInProg" class="container">
             <p>Need a suggestion on what to finish first? Why don't you resume <b>{{ featuredInProg.name }}</b>?</p>
+            <br></br>
+          </div>
+          <div v-else-if="featuredQueue" class="container">
+            <p>Going to start on something new? Try <b>{{ featuredQueue.name }}</b>!</p>
             <br></br>
           </div>
           <div class="has-text-centered">
