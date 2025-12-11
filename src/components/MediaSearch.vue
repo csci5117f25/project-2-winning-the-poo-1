@@ -69,13 +69,17 @@ const addtoBacklog = async (movieData) => {
 
 <template>
   <div class="search-container">
-    <div class="search-bar">
-      <input class="search-input" v-model="query" @keyup.enter="search" placeholder="Search for a movie..."
-        type="text" />
-      <button class="search-btn" @click="search">Search</button>
-      <button class="mic-btn" @click="isListening ? stop() : start()">{{ isListening ? 'Stop Voice Search' : 'Try Voice Search' }}</button>
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <input class="search-input" v-model="query" @keyup.enter="search" placeholder="Search for a movie..." type="text" />
     </div>
+
+    <button class="search-btn" @click="search">Search</button>
+    <button class="mic-btn" @click="isListening ? stop() : start()">
+      {{ isListening ? 'Stop Voice Search' : 'Try Voice Search' }}
+    </button>
   </div>
+</div>
 
   <div v-if="results.length" class="section">
     <div class="columns is-multiline">
@@ -115,11 +119,17 @@ const addtoBacklog = async (movieData) => {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 0.95rem;
+  font-size: 1 rem;
   padding: 0.4rem 0.2rem;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   padding: 0.75rem 1rem;
   border-radius: 10px;
+  width: 25vw;
+}
+@media (max-width: 640px) {
+  .search-input {
+    width: 60vw;
+  }
 }
 
 .search-container {
@@ -127,10 +137,16 @@ const addtoBacklog = async (movieData) => {
   justify-content: center;
   margin: 10px;
 }
-
+.search-input-wrapper {
+  width: 100%;
+  margin-bottom: 10px;
+  justify-content: center;
+  display: flex
+}
 .search-bar {
   width: 50vw;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
   align-items: center;
@@ -141,7 +157,7 @@ const addtoBacklog = async (movieData) => {
   border: none;
   border-radius: 10px;
   padding: 0.5rem 1rem;
-  font-size: 1rem;
+  font-size: .8rem;
   font-weight: bold;
   text-transform: uppercase;
   cursor: pointer;
@@ -154,7 +170,7 @@ const addtoBacklog = async (movieData) => {
   border: none;
   border-radius: 10px;
   padding: 0.5rem 1rem;
-  font-size: 1rem;
+  font-size: .8rem;
   font-weight: bold;
   text-transform: uppercase;
   cursor: pointer;

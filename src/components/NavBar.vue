@@ -121,7 +121,8 @@ async function logout() {
 
     <RouterLink to="/categories" class="tab">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        <circle cx="11" cy="11" r="8" stroke-width="2"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/>
       </svg>
     </RouterLink>
 
