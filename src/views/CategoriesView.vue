@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-import TrendingMedia from '../components/TrendingMedia.vue';
 import MoviesCategory from '../components/categories/MoviesCategory.vue';
 import ShowsCategory from '../components/categories/ShowsCategory.vue';
 import BooksCategory from '../components/categories/BooksCategory.vue';
@@ -14,11 +13,19 @@ const categories = ['MOVIES', 'TV SHOWS', 'BOOKS', 'GAMES', 'OTHER'];
 const setCategory = (cat) => {
   activeTab.value = cat;
 };
+
+const componentMap = {
+  'MOVIES': MoviesCategory,
+  'TV SHOWS': ShowsCategory,
+  'BOOKS': BooksCategory,
+  'GAMES': GamesCategory,
+}
+
+const activeComponent = computed(() => componentMap[activeTab.value])
 </script>
 
 <template>
   <div class="has-background-light" style="min-height: 100vh;">
-
     <section class="section">
       <div class="container">
 
@@ -39,11 +46,9 @@ const setCategory = (cat) => {
         </div>
 
         <div class="content-wrapper">
-          <MoviesCategory v-if="activeTab === 'MOVIES'" :query="searchQuery" />
-          <ShowsCategory v-if="activeTab === 'TV SHOWS'" :query="searchQuery" />
-          <BooksCategory v-if="activeTab === 'BOOKS'" :query="searchQuery" />
-          <GamesCategory v-if="activeTab === 'GAMES'" :query="searchQuery" />
-
+          <KeepAlive>
+            <component v-if="activeComponent" :is="activeComponent" :key="activeTab" :query="searchQuery" />
+          </KeepAlive>
         </div>
 
       </div>
