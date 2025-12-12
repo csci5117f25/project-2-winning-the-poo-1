@@ -14,6 +14,18 @@ async function requestTMDB(endpoint, params = {}) {
   return await response.json();
 }
 
+async function getPopularMovie(page = 1) {
+  const url = `${API_URL}/movie/popular?api_key=${API_KEY}&page=${page}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("TMDB API Error");
+  }
+
+  return await response.json();
+}
+
 export default {
   searchMovies(query) {
     return requestTMDB('/search/movie', { query });
@@ -23,5 +35,8 @@ export default {
   },
   getTrendingMovies() {
     return requestTMDB(`/trending/movie/week`)
+  },
+  getPopularMovies(page = 1) {
+    return getPopularMovie(page);
   }
 }
