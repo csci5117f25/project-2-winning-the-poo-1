@@ -6,7 +6,7 @@ import { collection, addDoc, getDocs, query as fsQuery, where } from 'firebase/f
 import { db, auth } from '../../firebase_conf'
 import tmdbService from '../../api/tmdb';
 import placeholder from '../../assets/no_image.jpg'
-import checkmarkJson from '../../assets/checkmark_success_animation.json';
+import checkmarkJson from '../../assets/checkmark';
 
 const route = useRoute()
 
@@ -15,6 +15,8 @@ const items = ref([]);
 
 // Tracking added movie Ids to disable add button
 const addedMovieIds = ref(new Set());
+
+const isLoading = ref(false);
 
 // UI state for each movie item
 const uiState = ref({});
@@ -40,6 +42,7 @@ async function loadPopularMovies(pages = 1) {
 
 // Load movies based on query or trending
 async function loadMovies(query) {
+  isLoading.value = true;
   try {
     let data;
 
@@ -68,6 +71,8 @@ async function loadMovies(query) {
 
   } catch (e) {
     console.error("Error loading movies:", e);
+  } finally {
+    isLoading.value = false;
   }
 }
 
@@ -161,39 +166,43 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="columns is-multiline is-mobile">
-      <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
+    <div>
+      <div v-if="isLoading" class="loader-wrapper">
+        <div class="loader"></div>
+      </div>
+      <div class="columns is-multiline is-mobile">
+        <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
 
-        <div class="media-card-wrapper">
-          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'movie' } }">
-            <figure class="image is-2by3">
-              <img :src="item.image || placeholder" class="poster-image" alt="Movie Poster" />
-            </figure>
-          </RouterLink>
-          <button class="button is-dark is-rounded is-small floating-btn"
-            :class="{ 'is-animating': uiState[item.id]?.justAdded }" @click.stop="addtoBacklog(item)"
-            :disabled="addedMovieIds.has(item.id)">
+          <div class="media-card-wrapper">
+            <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'movie' } }">
+              <figure class="image is-2by3">
+                <img :src="item.image || placeholder" class="poster-image" alt="Movie Poster" />
+              </figure>
+            </RouterLink>
+            <button class="button is-dark is-rounded is-small floating-btn"
+              :class="{ 'is-animating': uiState[item.id]?.justAdded }" @click.stop="addtoBacklog(item)"
+              :disabled="addedMovieIds.has(item.id)">
 
-            <template v-if="uiState[item.id]?.justAdded">
-              <DotLottieVue :data="checkmarkJson" autoplay :loop="false" :speed="0.7"
-                style="width: 100%; height: 100%; display: block;" />
-            </template>
-            <template v-else>
-              <span class="icon is-small icon-box">
-                <template v-if="addedMovieIds.has(item.id)">
-                  <svg class="static-check" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                      stroke-linejoin="round" />
-                  </svg>
-                </template>
-                <template v-else>+</template>
-              </span>
-            </template>
+              <template v-if="uiState[item.id]?.justAdded">
+                <DotLottieVue :data="checkmarkJson" autoplay :loop="false" :speed="0.7"
+                  style="width: 100%; height: 100%; display: block;" />
+              </template>
+              <template v-else>
+                <span class="icon is-small icon-box">
+                  <template v-if="addedMovieIds.has(item.id)">
+                    <svg class="static-check" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </template>
+                  <template v-else>+</template>
+                </span>
+              </template>
 
-          </button>
+            </button>
+          </div>
+          <p class="has-text-centered has-text-weight-bold mt-2 is-size-7">{{ item.title }}</p>
         </div>
-
-        <p class="has-text-centered has-text-weight-bold mt-2 is-size-7">{{ item.title }}</p>
       </div>
     </div>
   </div>
@@ -232,5 +241,30 @@ onMounted(async () => {
 
 .floating-btn:hover {
   transform: scale(1.1);
+}
+
+/* stole this from https://www.w3schools.com/howto/howto_css_loader.asp */
+.loader-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: lightgray;
+}
+
+.loader {
+  border: 12px solid #e0e0e0;
+  border-top: 12px solid #9e9e9e;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

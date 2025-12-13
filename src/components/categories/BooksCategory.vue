@@ -5,13 +5,15 @@ import { collection, addDoc, getDocs, query as fsQuery, where } from 'firebase/f
 import { db, auth } from '../../firebase_conf'
 import gbooksService from '../../api/gbooks'
 import placeholder from '../../assets/no_image.jpg'
-import checkmarkJson from '../../assets/checkmark_success_animation.json'
+import checkmarkJson from '../../assets/checkmark.json'
 
 const props = defineProps(['query'])
 const items = ref([])
 
 // Track added book IDs
 const addedBookIds = ref(new Set())
+
+const isLoading = ref(false);
 
 // UI state per card
 const uiState = ref({})
@@ -50,6 +52,7 @@ function normalizeBook(b) {
 }
 
 async function loadBooks(search) {
+  isLoading.value = true;
   try {
     let data
 
@@ -65,6 +68,8 @@ async function loadBooks(search) {
     })
   } catch (e) {
     console.error('Error loading books:', e)
+  } finally {
+    isLoading.value = false;
   }
 }
 
@@ -154,6 +159,9 @@ onMounted(async () => {
 
 <template>
   <div>
+    <div v-if="isLoading" class="loader-wrapper">
+        <div class="loader"></div>
+      </div>
     <div class="columns is-multiline is-mobile">
       <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
         <div class="media-card-wrapper">
@@ -227,5 +235,31 @@ onMounted(async () => {
 
 .floating-btn:hover {
   transform: scale(1.1);
+}
+
+
+/* stole this from https://www.w3schools.com/howto/howto_css_loader.asp */
+.loader-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: lightgray;
+}
+
+.loader {
+  border: 12px solid #e0e0e0;
+  border-top: 12px solid #9e9e9e;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

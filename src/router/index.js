@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
   const isLoggedIn = !!auth.currentUser
 
   if (to.meta.requiresAuth && !isLoggedIn) {
-    alert('Please login')
+    //alert('Please login')
     next({
       path: '/',
       query: { redirect: to.fullPath },

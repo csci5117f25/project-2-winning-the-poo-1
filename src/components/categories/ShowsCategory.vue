@@ -7,7 +7,7 @@ import { collection, addDoc, getDocs, query as fsQuery, where } from 'firebase/f
 import { db, auth } from '../../firebase_conf';
 import tmdbService from '../../api/tmdb';
 import placeholder from '../../assets/no_image.jpg';
-import checkmarkJson from '../../assets/checkmark_success_animation.json';
+import checkmarkJson from '../../assets/checkmark.json';
 
 const props = defineProps(['query']);
 const items = ref([]);
