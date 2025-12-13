@@ -1,6 +1,6 @@
 <script setup>
 import { useCurrentUser, useCollection } from 'vuefire'
-import { collection, query, where } from 'firebase/firestore'
+import { collection, query, where, doc, updateDoc } from 'firebase/firestore'
 import { computed } from 'vue'
 import { db } from '../firebase_conf'
 
@@ -24,6 +24,14 @@ const queueTime = computed(() => //I thought this needed curly brackets? idk man
 const completedTime = computed(() => //I thought this needed curly brackets? idk man
   queueItems.value.filter(item => item.status === 'complete').reduce((accumulator, item) => accumulator + item.time, 0)
 )
+
+const unfinishMedia = async (itemId) => {
+  const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
+
+  await updateDoc(itemRef, {
+    status: 'queued'
+  })
+};
 </script>
 
 <template>
@@ -83,6 +91,7 @@ const completedTime = computed(() => //I thought this needed curly brackets? idk
           <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
           <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
           <p>{{ item.time }} minutes</p>
+          <button class="uncomplete-btn" @click="unfinishMedia(item.id)">Mark Incomplete</button>
       </div>
       <div v-if="complete.length === 0">
         <p>You haven't finished anything on your list? Get out there, then!</p>
@@ -101,5 +110,15 @@ img {
 }
 div {
   padding: 1rem;
+}
+
+.uncomplete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.uncomplete-btn:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
 }
 </style>
