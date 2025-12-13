@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY
+const API_KEY = import.meta.env.VITE_GBOOKS_API_KEY
 const API_URL = 'https://www.googleapis.com/books/v1'
 
 async function requestBooks(endpoint, params = {}) {
@@ -15,9 +15,25 @@ async function requestBooks(endpoint, params = {}) {
 }
 
 export default {
-  searchBooks(query) {
-    return requestBooks('/volumes', { q: query })
+  searchBooks(query, startIndex = 0, maxResults = 20) {
+    return requestBooks('/volumes', {
+      q: query,
+      startIndex,
+      maxResults,
+    })
   },
+
+  getTrendingBooks(startIndex = 0, maxResults = 20) {
+    return requestBooks('/volumes', {
+      q: 'subject:fiction',
+      orderBy: 'relevance',
+      startIndex,
+      maxResults,
+      printType: 'books',
+      langRestrict: 'en',
+    })
+  },
+
   getBookDetails(id) {
     return requestBooks(`/volumes/${id}`)
   },

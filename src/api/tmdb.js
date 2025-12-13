@@ -46,13 +46,13 @@ export default {
   getPopularMovies(page = 1) {
     return getPopularMovie(page)
   },
-  searchTV(query) {
+  searchShow(query) {
     return requestTMDB('/search/tv', { query })
   },
-  getTVDetails(id) {
+  getShowDetails(id) {
     return requestTMDB(`/tv/${id}`)
   },
-  getPopularTV(page = 1) {
+  getPopularShows(page = 1) {
     return getPopularTV(page)
   },
 }

@@ -1,11 +1,14 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
+import { useRoute } from 'vue-router'
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query as fsQuery, where } from 'firebase/firestore';
 import { db, auth } from '../../firebase_conf'
 import tmdbService from '../../api/tmdb';
 import placeholder from '../../assets/no_image.jpg'
 import checkmarkJson from '../../assets/checkmark_success_animation.json';
+
+const route = useRoute()
 
 const props = defineProps(['query']);
 const items = ref([]);
@@ -102,7 +105,7 @@ const addtoBacklog = async (movieData) => {
     const userItems = collection(db, 'users', user.uid, 'queue');
 
     // Checking is movie already in backlog
-    const q = query(
+    const q = fsQuery(
       userItems,
       where('media_type', '==', 'movie'),
       where('tmdb_id', '==', movieData.id));
@@ -162,13 +165,13 @@ onMounted(async () => {
       <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
 
         <div class="media-card-wrapper">
-
-          <figure class="image is-2by3">
-            <img :src="item.image || placeholder" class="poster-image" alt="Movie Poster" />
-          </figure>
-
+          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'movie' } }">
+            <figure class="image is-2by3">
+              <img :src="item.image || placeholder" class="poster-image" alt="Movie Poster" />
+            </figure>
+          </RouterLink>
           <button class="button is-dark is-rounded is-small floating-btn"
-            :class="{ 'is-animating': uiState[item.id]?.justAdded }" @click="addtoBacklog(item)"
+            :class="{ 'is-animating': uiState[item.id]?.justAdded }" @click.stop="addtoBacklog(item)"
             :disabled="addedMovieIds.has(item.id)">
 
             <template v-if="uiState[item.id]?.justAdded">

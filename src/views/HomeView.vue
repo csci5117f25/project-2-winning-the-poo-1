@@ -114,11 +114,11 @@ onMounted(() => {
           <!-- display random item in progress -->
           <div v-if="featuredInProg" class="container">
             <p>Need a suggestion on what to finish first? Why don't you resume <b>{{ featuredInProg.name }}</b>?</p>
-            <br></br>
+            <br>
           </div>
           <div v-else-if="featuredQueue" class="container">
             <p>Going to start on something new? Try <b>{{ featuredQueue.name }}</b>!</p>
-            <br></br>
+            <br>
           </div>
           <div class="has-text-centered">
             <RouterLink to="/list" class="button is-black is-medium">Go to My List</RouterLink>

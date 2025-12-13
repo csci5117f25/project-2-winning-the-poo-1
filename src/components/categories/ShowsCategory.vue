@@ -23,7 +23,7 @@ function ensureState(id) {
 async function loadPopularShows(pages = 1) {
   const results = [];
   for (let page = 1; page <= pages; page++) {
-    const data = await tmdbService.getPopularTV(page);
+    const data = await tmdbService.getPopularShows(page);
     results.push(...(data.results || []));
   }
   return { results };
@@ -33,7 +33,7 @@ async function loadShows(q) {
   try {
     let data;
     if (q) {
-      data = await tmdbService.searchTV(q);
+      data = await tmdbService.searchShow(q);
     } else {
       data = await loadPopularShows(7);
     }
@@ -90,7 +90,7 @@ const addToBacklog = async (showData) => {
       return;
     }
 
-    const details = await tmdbService.getTVDetails(showData.id);
+    const details = await tmdbService.getShowDetails(showData.id);
 
     const backlogItem = {
       tmdb_id: details.id,
@@ -131,9 +131,11 @@ onMounted(async () => {
     <div class="columns is-multiline is-mobile">
       <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
         <div class="media-card-wrapper">
-          <figure class="image is-2by3">
-            <img :src="item.image || placeholder" class="poster-image" alt="Movie Poster" />
-          </figure>
+          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { type: 'show' } }">
+            <figure class="image is-2by3">
+              <img :src="item.image || placeholder" class="poster-image" alt="Show Poster" />
+            </figure>
+          </RouterLink>
           <button class="button is-dark is-rounded is-small floating-btn"
             :class="{ 'is-animating': uiState[item.id]?.justAdded }" @click="addToBacklog(item)"
             :disabled="addedIds.has(item.id)">
