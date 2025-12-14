@@ -50,19 +50,13 @@ const readableTime = computed(() => {
   return `${days.toFixed(1)} days`
 })
 
-async function removeFromCompleted(item) {
-  const ref = doc(
-    db,
-    'users',
-    user.value.uid,
-    'queue',
-    item.id
-  )
+const unfinishMedia = async (itemId) => {
+  const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
 
-  await updateDoc(ref, {
-    status: deleteField()
+  await updateDoc(itemRef, {
+    status: 'queued'
   })
-}
+};
 
 </script>
 
@@ -139,7 +133,7 @@ async function removeFromCompleted(item) {
           </div>
           <div class="is-flex is-justify-content-center is-align-items-center py-0">
 
-            <button class="button is-small is-centered is-danger is-light" @click="removeFromCompleted(item)">Remove</button>
+            <button class="button is-small is-centered is-danger is-light" @click="unfinishMedia(item.id)">Mark Incomplete</button>
           </div>
         </div>
       </div>
