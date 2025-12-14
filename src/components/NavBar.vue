@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useCurrentUser, useFirebaseAuth } from 'vuefire'
 import { db, provider } from '@/firebase_conf'
 import { getDoc, doc, setDoc, collection } from 'firebase/firestore'
@@ -7,6 +7,8 @@ import { signInWithPopup, signOut } from 'firebase/auth'
 
 const user = useCurrentUser()
 const auth = useFirebaseAuth()
+
+const router = useRouter()
 
 async function createUserIfNotExists(user) {
   const userRef = doc(db, 'users', user.uid)
@@ -77,6 +79,7 @@ async function login() {
     const result = await signInWithPopup(auth, provider)
     const user = result.user
     await createUserIfNotExists(user)
+    router.push('/home')
   } catch {
     alert("oh no");
   }
@@ -85,6 +88,7 @@ async function login() {
 async function logout() {
   try {
     await signOut(auth)
+    router.push('/')
   } catch {
     alert("oh no");
   }
@@ -92,53 +96,97 @@ async function logout() {
 </script>
 
 <template>
-  <div class="menu">
+  <nav class="menu">
     <div class="links">
       <RouterLink to="/" class="home">MEDIAQ</RouterLink>
-      <RouterLink to="/add" class="nav">ADD</RouterLink>
-      <RouterLink to="/categories" class="nav">CATEGORIES</RouterLink>
-      <RouterLink to="/list" class="nav">LIST</RouterLink>
+      <template v-if="user">
+        <RouterLink to="/add" class="nav">ADD</RouterLink>
+        <RouterLink to="/categories" class="nav">CATEGORIES</RouterLink>
+        <RouterLink to="/list" class="nav">LIST</RouterLink>
+        <RouterLink to="/profile" class="nav">PROFILE</RouterLink>
+      </template>
     </div>
     <div class="loginout">
       <button @click="login()" class="logMenu" v-if="!user">Login/Signup</button>
       <button @click="logout()" class="logMenu" v-else>Logout</button>
       <RouterLink to="/profile" class="nav">Profile</RouterLink>
     </div>
-  </div>
+  </nav>
+
+  <nav class="bottom-nav">
+    <RouterLink to="/" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-width="2" d="M3 9.5l9-7 9 7V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z" />
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/add" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-width="2" d="M12 5v14m7-7H5" />
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/categories" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="11" cy="11" r="8" stroke-width="2" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2" />
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/list" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-width="2" d="M9 5h12M9 12h12M9 19h12M4 5h.01M4 12h.01M4 19h.01" />
+      </svg>
+    </RouterLink>
+
+    <RouterLink to="/profile" class="tab">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="8" r="4" stroke-width="2" />
+        <path stroke-width="2" d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+      </svg>
+    </RouterLink>
+  </nav>
+
 </template>
 
 <style scoped>
-.menu{
-  width: 100dvw;
+.menu {
+  padding-left: 1rem;
+  width: 100%;
   height: 60px;
   position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
   background-color: black;
+  z-index: 1000;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.links{
+
+.links {
   display: flex;
   gap: .5em;
   align-items: center;
   justify-content: flex-start;
   width: 40vw;
 }
-.nav{
+
+.nav {
   color: white;
   text-decoration: none;
   font-size: large;
   margin: 10px;
 }
-.loginout{
+
+.loginout {
   margin: 10px;
   float: right;
 }
-.logMenu{
+
+.logMenu {
   text-transform: uppercase;
   background-color: transparent;
   border: none;
@@ -148,11 +196,61 @@ async function logout() {
   cursor: pointer;
 }
 
-.home{
+.home {
   font-size: 30px;
   color: white;
   text-decoration: none;
   margin: 5px;
+  font-weight: bold;
 }
 
+a.nav {
+  transition: 0.2s;
+}
+
+a.nav:hover {
+  background-color: rgb(131, 131, 131);
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+
+/* no bottom nav on desktop */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  /* hide the desktop nav on mobile */
+  .menu {
+    display: none;
+  }
+
+  /* mobile bottom nav */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: white;
+    border-top: 1px solid #ddd;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+  }
+
+  .bottom-nav .tab {
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+  }
+
+  .icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+  }
+}
 </style>

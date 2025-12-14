@@ -12,7 +12,6 @@ import NavBar from './components/NavBar.vue'
 
 <style scoped>
 main {
-  padding: 10px;
   margin-top: 60px;
   background: white;
 }

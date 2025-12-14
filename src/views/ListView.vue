@@ -1,7 +1,7 @@
 <script setup>
 import { useCurrentUser, useCollection } from 'vuefire'
 import { db } from '../firebase_conf'
-import { collection, query, where, doc, updateDoc } from 'firebase/firestore'
+import { collection, query, where, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { computed } from 'vue'
 
 const user = useCurrentUser()
@@ -37,6 +37,14 @@ const startMedia = async (itemId) => {
   })
 };
 
+const finishMedia = async (itemId) => {
+  const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
+
+  await updateDoc(itemRef, {
+    status: 'complete'
+  })
+};
+
 const requeueMedia = async (itemId) => {
   const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
 
@@ -45,52 +53,85 @@ const requeueMedia = async (itemId) => {
   })
 }
 
+const deleteMedia = async (itemId) => {
+  const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId)
+
+  await deleteDoc(itemRef)
+}
+
+
+
 </script>
 
 <template>
-  <h1>List</h1>
+  <section class="list-container">
+    <h1>MEDIA LIST</h1>
 
-  <p>IN-PROGRESS</p>
-  <div class="in-progress">
-    <div v-for="item in inProgress" :key="item.name" class="card">
-        <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
-        <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
-        <p>{{ item.time }} minutes</p>
-        <button class="card-btn" @click="requeueMedia(item.id)">Stop</button>
+    <div>
+      <h3>IN-PROGRESS</h3>
+      <p v-if="inProgress.length > 0">Your in-progress items will take you about <strong>{{ timeLeftProg }}</strong> minutes to complete.</p>
     </div>
-  </div>
-  <div>
-    <p>Your in-progress items will take you about {{ timeLeftProg }} minutes to complete.</p>
-  </div>
+    <div class="in-progress">
+      <div v-for="item in inProgress" :key="item.name" class="card">
+          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
+          <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
+          <p>{{ item.time }} minutes</p>
+          <button class="remove-btn" @click="requeueMedia(item.id)">Stop</button>
+          <button class="complete-btn" @click="finishMedia(item.id)">Mark Complete</button>
+      </div>
+      <div v-if="inProgress.length === 0">
+        <p>Start an item</p>
+      </div>
+    </div>
 
-  <p>QUEUE</p>
-  <div class="queue">
-    <div v-for="item in queue" :key="item.name" class="card">
-        <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
-        <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
-        <p>{{ item.time }} minutes</p>
-        <button class="card-btn" @click="startMedia(item.id)">Start</button>
+    <div>
+      <h3>QUEUE</h3>
+      <p v-if="queue.length > 0">Your queued items will take you about <strong>{{ timeLeftQueue }}</strong> minutes to complete.</p>
     </div>
-  </div>
-  <div>
-    <p>Your queued items will take you about {{ timeLeftQueue }} minutes to complete.</p>
-  </div>
+    <div class="queue">
+      <div v-for="item in queue" :key="item.name" class="card">
+          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }" class="card-title">{{ item.name}}</RouterLink>
+          <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
+          <p>{{ item.time }} minutes</p>
+          <div class="buttons">
+            <button class="card-btn" @click="startMedia(item.id)">Start</button>
+            <button class="remove-btn" @click="deleteMedia(item.id)">Remove</button>
+          </div>
+      </div>
+    </div>
+
+  </section>
 
 </template>
 
 <style scoped>
+h1 {
+  text-align: center;
+  margin-bottom: 0;
+}
+.list-container {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  margin-top: 60px;
+}
 .in-progress {
+    background-color: rgb(10, 10, 10);
     display: flex;
     flex-direction: row;
     overflow-x: auto;
     padding: 10px 0;
 }
-
+.highlight {
+  font-weight: 700;
+  color: #111827;
+}
 .card {
     background: white;
-    padding: 10px;
-    border-radius: 10px;
-    width: 10vw;
+    padding: 1rem;
+    border-radius: 12px;
+    width: 15vw;
     height: auto;
     margin: 1rem;
     box-shadow: 0px 8px 28px rgba(0, 0, 0, 0.2);
@@ -99,11 +140,23 @@ const requeueMedia = async (itemId) => {
     justify-content: center;
     align-items: center;
     text-align: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
+.card-title {
+  text-decoration: none;
+  color: #111827;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+
 .card-img {
-  padding-top: 1em;
+  width: 100%;
   height: 200px;
+  margin-top: 1em;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .card a {
@@ -112,17 +165,65 @@ const requeueMedia = async (itemId) => {
 }
 
 .card:hover {
-    cursor: pointer;
-    background-color: gray;
-    transform: scale(1.1);
-    transition: 0.2s ease;
+  transform: scale(1.05);
 }
+
+.buttons {
+  display: flex;
+  gap: 1em;
+}
+
+.card-btn, .remove-btn {
+  cursor: pointer;
+  border: none;
+  padding: 1em;
+  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: 80px;
+}
+
+.card-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.card-btn:hover {
+  background-color: #3b8d40;
+  transform: scale(1.05);
+}
+
+.remove-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.remove-btn:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+
+.complete-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.complete-btn:hover {
+  background-color: #4caf50;
+  transform: scale(1.05);
+}
+
 .queue {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
-    padding: 10px 0;
+    padding: 1em;
+    background-color: rgb(10, 10, 10);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
 }
+
 .in-progress::-webkit-scrollbar, .queue::-webkit-scrollbar {
   height: 6px;
 }
@@ -130,6 +231,8 @@ const requeueMedia = async (itemId) => {
   background-color: rgba(0,0,0,0.3);
   border-radius: 3px;
 }
+
+
 @media (max-width: 600px) {
   .card {
     min-width: 120px;
@@ -142,5 +245,6 @@ const requeueMedia = async (itemId) => {
   p {
     font-size: 0.8rem;
   }
+
 }
 </style>
