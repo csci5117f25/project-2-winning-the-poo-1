@@ -1,40 +1,22 @@
-const API_KEY = import.meta.env.VITE_GBOOKS_API_KEY
-const API_URL = 'https://www.googleapis.com/books/v1'
-
-async function requestBooks(endpoint, params = {}) {
-  params.key = API_KEY
-  const query = new URLSearchParams(params).toString()
-
-  const response = await fetch(`${API_URL}${endpoint}?${query}`)
-
-  if (!response.ok) {
-    throw new Error('Google Books API Error')
-  }
-
-  return await response.json()
-}
+import { httpsCallable } from 'firebase/functions'
+import { functions } from '../firebase_conf'
 
 export default {
-  searchBooks(query, startIndex = 0, maxResults = 20) {
-    return requestBooks('/volumes', {
-      q: query,
-      startIndex,
-      maxResults,
-    })
+  async searchBooks(query, startIndex = 0, maxResults = 20) {
+    const searchBooksFunction = httpsCallable(functions, 'searchBooks')
+    const result = await searchBooksFunction({ query, startIndex, maxResults })
+    return result.data
   },
 
-  getTrendingBooks(startIndex = 0, maxResults = 20) {
-    return requestBooks('/volumes', {
-      q: 'subject:fiction',
-      orderBy: 'relevance',
-      startIndex,
-      maxResults,
-      printType: 'books',
-      langRestrict: 'en',
-    })
+  async getTrendingBooks(startIndex = 0, maxResults = 20) {
+    const getTrendingBooksFunction = httpsCallable(functions, 'getTrendingBooks')
+    const result = await getTrendingBooksFunction({ startIndex, maxResults })
+    return result.data
   },
 
-  getBookDetails(id) {
-    return requestBooks(`/volumes/${id}`)
+  async getBookDetails(id) {
+    const getBookDetailsFunction = httpsCallable(functions, 'getBookDetails')
+    const result = await getBookDetailsFunction({ id })
+    return result.data
   },
 }
