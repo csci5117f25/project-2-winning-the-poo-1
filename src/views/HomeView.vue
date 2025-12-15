@@ -4,6 +4,8 @@ import { useCurrentUser, useCollection } from 'vuefire'
 import { collection } from 'firebase/firestore'
 import { db } from '../firebase_conf'
 import { gsap } from 'gsap'
+import GsapCarousel from '../components/GsapCarousel.vue';
+
 
 const user = useCurrentUser()
 
@@ -87,6 +89,12 @@ onMounted(() => {
 
 </script>
 
+<script>
+  export default {
+  components: { GsapCarousel }
+};
+</script>
+
 <template>
   <section class="hero is-medium">
     <div class="hero-body has-text-centered">
@@ -131,4 +139,7 @@ onMounted(() => {
       </div>
     </div>
   </section>
+  <div>
+    <GsapCarousel/>
+  </div>
 </template>
