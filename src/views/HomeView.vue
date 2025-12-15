@@ -89,12 +89,6 @@ onMounted(() => {
 
 </script>
 
-<script>
-  export default {
-  components: { GsapCarousel }
-};
-</script>
-
 <template>
   <section class="hero is-medium">
     <div class="hero-body has-text-centered">
@@ -140,6 +134,6 @@ onMounted(() => {
     </div>
   </section>
   <div>
-    <GsapCarousel/>
+    <GsapCarousel :items="items"/>
   </div>
 </template>

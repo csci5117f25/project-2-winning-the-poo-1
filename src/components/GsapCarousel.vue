@@ -1,39 +1,71 @@
 <script setup>
   import { gsap } from "gsap";
-  import { onMounted, ref } from "vue";
+  import { onMounted, ref, watch, nextTick } from "vue";
+
+  const props = defineProps({
+    items: {
+      type: Array,
+      default: () => []
+    }
+  });
+
 
   const wrapper = ref(null);
   const boxes = ref([]);
 
   onMounted(() => {
-    boxes.value = wrapper.value.querySelectorAll(".box");
-
-    const loop = horizontalLoop(boxes.value, {});
-
-    boxes.value.forEach((box, i) =>
-      box.addEventListener("click", () =>
-        loop.toIndex(i, { duration: 0.8, ease: "power1.inOut" })
-      )
-    );
-
-    wrapper.value
-      .querySelector(".toggle")
-      .addEventListener("click", () =>
-        wrapper.value.classList.toggle("show-overflow")
-      );
-
-    wrapper.value
-      .querySelector(".next")
-      .addEventListener("click", () =>
-        loop.next({ duration: 0.4, ease: "power1.inOut" })
-      );
-
-    wrapper.value
-      .querySelector(".prev")
-      .addEventListener("click", () =>
-        loop.previous({ duration: 0.4, ease: "power1.inOut" })
-      );
+    initLoop()
   })
+
+  watch(
+    () => props.items.length,
+    async (len) => {
+      if(len > 0) {
+        await nextTick() //god bless this utility function. I can finally go to bed.
+        initLoop(true)
+      }
+    },
+    { immediate: true }
+  )
+
+  let loop
+
+  function initLoop(reset = false) {
+    const boxes = wrapper.value?.querySelectorAll(".box") ?? []
+    if (!boxes.length) return   // <-- guard: no boxes, do nothing
+
+    if (reset && loop) {
+      loop.kill()
+    }
+
+    loop = horizontalLoop(boxes, { repeat: -1, speed: 1, paused: false})
+    loop.play()
+  }
+
+
+    // boxes.value.forEach((box, i) =>
+    //   box.addEventListener("click", () =>
+    //     loop.toIndex(i, { duration: 0.8, ease: "power1.inOut" })
+    //   )
+    // );
+
+    // wrapper.value
+    //   .querySelector(".toggle")
+    //   .addEventListener("click", () =>
+    //     wrapper.value.classList.toggle("show-overflow")
+    //   );
+
+    // wrapper.value
+    //   .querySelector(".next")
+    //   .addEventListener("click", () =>
+    //     loop.next({ duration: 0.4, ease: "power1.inOut" })
+    //   );
+
+    // wrapper.value
+    //   .querySelector(".prev")
+    //   .addEventListener("click", () =>
+    //     loop.previous({ duration: 0.4, ease: "power1.inOut" })
+    //   );
 
 /*
 Taken and adapted from https://gsap.com/docs/v3/HelperFunctions/helpers/seamlessLoop/.
@@ -113,9 +145,10 @@ function horizontalLoop(items, config) {
 
 <template>
   <div class="wrapper" ref="wrapper">
-    <div class="box" v-for="n in 11" :key="n">
+    <!-- instead of displaying the placeholders in the demo, display items on user list -->
+    <div class="box" v-for="(item, idx) in props.items" :key="idx">
       <div class="box__inner">
-        <p>{{ n }}</p>
+        <img :src="item.image_url" :alt="item.name" />
       </div>
     </div>
   </div>
@@ -155,7 +188,7 @@ body {
   border-right: dashed 2px var(--color-surface50);
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   overflow: hidden;
 }
 
@@ -176,28 +209,31 @@ body {
   height: 80%;
   width: 20%;
   min-width: 150px;
+  display: flex;
 }
 
 .box__inner {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
-  font-size: 21px;
-  cursor: pointer;
   width: 100%;
   height: 100%;
-  background: #333;
-  color: #fff;
-
 }
 
-.show-overflow {
-  overflow: visible;
+.box__inner img {
+  flex: 1;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .box p {
-  color: #fff;
+  margin: 0;
+  line-height: 1;
   font-size: 3rem;
+  color: #fff;
+
 }
 </style>
