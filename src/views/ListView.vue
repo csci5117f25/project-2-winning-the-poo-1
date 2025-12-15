@@ -1,7 +1,7 @@
 <script setup>
 import { useCurrentUser, useCollection } from 'vuefire'
 import { db } from '../firebase_conf'
-import { collection, query, where, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { collection, query, where, doc, updateDoc, deleteDoc, serverTimestamp, deleteField } from 'firebase/firestore'
 import { computed } from 'vue'
 
 const user = useCurrentUser()
@@ -41,7 +41,8 @@ const finishMedia = async (itemId) => {
   const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
 
   await updateDoc(itemRef, {
-    status: 'complete'
+    status: 'complete',
+    completedAt: serverTimestamp(),
   })
 };
 
@@ -49,7 +50,8 @@ const requeueMedia = async (itemId) => {
   const itemRef = doc(db, 'users', user.value.uid, 'queue', itemId);
 
   await updateDoc(itemRef, {
-    status: 'queued'
+    status: 'queued',
+    completedAt: deleteField(),
   })
 }
 

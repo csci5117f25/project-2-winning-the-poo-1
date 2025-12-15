@@ -1,15 +1,14 @@
 <script setup>
 import { useCurrentUser, useCollection } from 'vuefire'
-import { collection, query, where, deleteField, doc, updateDoc } from 'firebase/firestore'
+import { collection, query, where, doc, updateDoc } from 'firebase/firestore'
 import { computed } from 'vue'
 import { db } from '../firebase_conf'
+import CategoriesView from './CategoriesView.vue'
+
 
 const user = useCurrentUser()
-
 const queueRef = collection(db, 'users', user.value.uid, 'queue');
-
 const queueItems = useCollection(queueRef);
-
 const completedQuery = query(queueRef, where("status", "==", "complete"))
 let complete = useCollection(completedQuery)
 
@@ -33,10 +32,12 @@ const completedMessage = computed(() => {
   return "You haven't finished anything on your list? Get out there, then!"
 })
 
-
 const readableTime = computed(() => {
   const mins = completedTime
 
+  if (mins.value === 0) {
+    return `0 mins`
+  }
   if (mins.value < 60) {
     return `${mins.value} minutes${mins.value === 1 ? '' : 's'}`
   }
@@ -58,6 +59,15 @@ const unfinishMedia = async (itemId) => {
   })
 };
 
+function dateCompletedAt(timestamp) {
+  if (!timestamp) return '—'
+  const date = timestamp.toDate()
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(date)
+}
 </script>
 
 <template>
@@ -79,28 +89,44 @@ const unfinishMedia = async (itemId) => {
           <hr/>
 
           <h2 class="title">Your Stats</h2>
+          <p v-if="inProgressTime === 0 & queueTime === 0 & completedTime === 0">
+            You don't have anything added yet. Go add some media <RouterLink :to="CategoriesView">here</RouterLink>!
+          </p>
 
           <div class="columns is-multiline has-text-centered">
 
             <div class="column is-third">
               <div class="box">
                 <p class="heading">In Progress</p>
-                <p class="title">{{ inProgressTime }} min</p>
+                <p v-if="inProgressTime > 0" class="title">
+                  {{ inProgressTime }} {{ inProgressTime <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else>
+                  ---
+                </p>
               </div>
             </div>
 
             <div class="column is-third">
               <div class="box">
                 <p class="heading">Queued</p>
-                <p class="title">{{ queueTime }} min</p>
+                <p v-if="queueTime > 0" class="title">
+                  {{ queueTime }} {{ queueTime <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else>
+                  ---
+                </p>
               </div>
             </div>
 
             <div class="column is-third">
               <div class="box">
                 <p class="heading">Completed</p>
-                <p class="title">
-                  {{ completedTime }} {{ completedTime === 1 ? 'min' : 'mins' }}
+                <p v-if="completedTime > 0" class="title">
+                  {{ completedTime }} {{ completedTime <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else>
+                  ---
                 </p>
               </div>
             </div>
@@ -115,7 +141,7 @@ const unfinishMedia = async (itemId) => {
     <div class="desc">
       <h3 class="title is-3 m-1">Your Completed Media</h3>
       <p v-if="complete.length > 0">You've finished <strong>{{ completedTime }}</strong> minutes of content.</p>
-      <p v-if="complete.length > 0">That's <strong>{{ readableTime }}!</strong> {{ completedMessage }}</p>
+      <p v-if="complete.length >= 0">That's <strong>{{ readableTime }}!</strong> {{ completedMessage }}</p>
     </div>
     <div class="columns is-multiline">
       <div v-for="item in complete" :key="item.id" class="column is-6-mobile is-4-tablet is-3-desktop">
@@ -131,8 +157,11 @@ const unfinishMedia = async (itemId) => {
               <img v-if="item.image_url" :src="item.image_url" alt="Cover Image"/>
             </figure>
           </div>
+          <!-- Completed Date -->
+          <p class="is-size-7 has-text-grey">
+            Completed: <strong>{{ dateCompletedAt(item.completedAt) }}</strong>
+          </p>
           <div class="is-flex is-justify-content-center is-align-items-center py-0">
-
             <button class="button is-small is-centered is-danger is-light" @click="unfinishMedia(item.id)">Mark Incomplete</button>
           </div>
         </div>

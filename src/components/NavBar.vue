@@ -93,25 +93,44 @@ async function logout() {
     alert("oh no");
   }
 }
+
 </script>
 
 <template>
-  <nav class="menu">
-    <div class="links">
-      <RouterLink to="/" class="home">MEDIAQ</RouterLink>
-      <template v-if="user">
-        <RouterLink to="/add" class="nav">ADD</RouterLink>
-        <RouterLink to="/categories" class="nav">CATEGORIES</RouterLink>
-        <RouterLink to="/list" class="nav">LIST</RouterLink>
-        <RouterLink to="/profile" class="nav">PROFILE</RouterLink>
+<nav class="navbar is-black is-fixed-top desktop-nav" role="navigation">
+  <div class="navbar-brand navbar-left">
+    <RouterLink to="/" class="navbar-item brand ">
+      MEDIAQ
+    </RouterLink>
+
+    <template v-if="user">
+      <RouterLink to="/add" class="navbar-item" active-class="is-active">ADD</RouterLink>
+      <RouterLink to="/categories" class="navbar-item" active-class="is-active">CATEGORIES</RouterLink>
+      <RouterLink to="/list" class="navbar-item" active-class="is-active">LIST</RouterLink>
+    </template>
+  </div>
+
+  <div class="navbar-end">
+    <div class="navbar-item is-flex is-align-items-center" style="gap: 0.75rem">
+      <button v-if="!user" class="button is-light is-small" @click="login">
+        Login / Signup
+      </button>
+
+      <template v-else>
+        <RouterLink to="/profile" class="navbar-item profile-link">
+          <figure class="image is-40x40">
+            <img class="is-rounded" :src="user?.photoURL || 'https://via.placeholder.com/48'" alt="Profile" />
+          </figure>
+        </RouterLink>
+
+        <button class="button is-small is-light" @click="logout">
+          Logout
+        </button>
       </template>
     </div>
-    <div class="loginout">
-      <button @click="login()" class="logMenu" v-if="!user">Login/Signup</button>
-      <button @click="logout()" class="logMenu" v-else>Logout</button>
-      <RouterLink to="/profile" class="nav">Profile</RouterLink>
-    </div>
-  </nav>
+  </div>
+</nav>
+
 
   <nav class="bottom-nav">
     <RouterLink to="/" class="tab">
@@ -150,28 +169,35 @@ async function logout() {
 </template>
 
 <style scoped>
-.menu {
-  padding-left: 1rem;
-  width: 100%;
-  height: 60px;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  background-color: black;
-  z-index: 1000;
-
+.desktop-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 0.75rem;
 }
 
-.links {
+.navbar-left {
   display: flex;
-  gap: .5em;
   align-items: center;
-  justify-content: flex-start;
-  width: 40vw;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 2rem;
+  margin-right: 0.75rem;
+}
+
+.navbar-left .navbar-item {
+  padding: 0.5rem 0.75rem;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-right: 1rem;
 }
 
 .nav {
@@ -180,48 +206,15 @@ async function logout() {
   font-size: large;
   margin: 10px;
 }
-
-.loginout {
-  margin: 10px;
-  float: right;
-}
-
-.logMenu {
-  text-transform: uppercase;
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: medium;
-  margin: 10px;
-  cursor: pointer;
-}
-
-.home {
-  font-size: 30px;
-  color: white;
-  text-decoration: none;
-  margin: 5px;
-  font-weight: bold;
-}
-
-a.nav {
-  transition: 0.2s;
-}
-
-a.nav:hover {
-  background-color: rgb(131, 131, 131);
-  border-radius: 5px;
-  padding: 0.5rem;
-}
-
 /* no bottom nav on desktop */
 .bottom-nav {
   display: none;
 }
 
+
+
 @media (max-width: 640px) {
-  /* hide the desktop nav on mobile */
-  .menu {
+  .desktop-nav {
     display: none;
   }
 
