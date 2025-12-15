@@ -58,9 +58,6 @@ const deleteMedia = async (itemId) => {
 
   await deleteDoc(itemRef)
 }
-
-
-
 </script>
 
 <template>
@@ -75,7 +72,7 @@ const deleteMedia = async (itemId) => {
         <div class="is-flex is-align-items-center" style="gap: 1rem;">
           <h2 class="title is-5 mb-0">In Progress</h2>
 
-          <p v-if="inProgress && inProgress.length === 0" class="has-text-grey is-size-8">
+          <p v-if="inProgress && inProgress.length !== 0" class="has-text-grey is-size-8">
             About <strong>{{ timeLeftProg }}</strong> minutes left
           </p>
         </div>
@@ -119,7 +116,7 @@ const deleteMedia = async (itemId) => {
         <div class="is-flex is-align-items-center" style="gap: 1rem;">
           <h2 class="title is-5 mb-0">Queue</h2>
 
-          <p v-if="queue && queue.length === 0" class="has-text-grey is-size-8 mb-0" >
+          <p v-if="queue && queue.length !== 0" class="has-text-grey is-size-8 mb-0" >
             About <strong>{{ timeLeftQueue }}</strong> minutes total
           </p>
         </div>
