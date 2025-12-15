@@ -1,6 +1,6 @@
 <script setup>
   import { gsap } from "gsap";
-  import { onMounted, ref, watch, nextTick } from "vue";
+  import { onMounted, ref, watch, nextTick, computed } from "vue";
 
   const props = defineProps({
     items: {
@@ -9,26 +9,34 @@
     }
   });
 
+  const paddedItems = computed(() => {
+    if (!props.items || props.items.length === 0) return []
+    const arr = [...props.items]
+    while (arr.length < 10) {
+      arr.push(...props.items)
+    }
+    return arr
+  })
 
   const wrapper = ref(null);
-  const boxes = ref([]);
+  let loop
 
   onMounted(() => {
     initLoop()
   })
 
   watch(
-    () => props.items.length,
+    () => paddedItems.value.length,
     async (len) => {
-      if(len > 0) {
-        await nextTick() //god bless this utility function. I can finally go to bed.
+      if (len > 0) {
+        await nextTick()
         initLoop(true)
       }
     },
     { immediate: true }
   )
 
-  let loop
+
 
   function initLoop(reset = false) {
     const boxes = wrapper.value?.querySelectorAll(".box") ?? []
@@ -145,14 +153,14 @@ function horizontalLoop(items, config) {
 
 <template>
   <div class="wrapper" ref="wrapper">
-    <!-- instead of displaying the placeholders in the demo, display items on user list -->
-    <div class="box" v-for="(item, idx) in props.items" :key="idx">
+    <div class="box" v-for="(item, idx) in paddedItems" :key="idx">
       <div class="box__inner">
         <img :src="item.image_url" :alt="item.name" />
       </div>
     </div>
   </div>
 </template>
+
 
 <style scoped>
 * {
@@ -181,16 +189,13 @@ body {
 }
 
 .wrapper {
-  height: 300px;
-  max-height: 50vh;
   width: 100%;
-  border-left: dashed 2px var(--color-surface50);
-  border-right: dashed 2px var(--color-surface50);
-  position: relative;
-  display: flex;
-  align-items: stretch;
+  height: 300px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
 }
+
 
 .carousel {
   position: absolute;
@@ -207,7 +212,7 @@ body {
   padding: 0.5rem;
   flex-shrink: 0;
   height: 80%;
-  width: 20%;
+  width: clamp(120px, 15%, 200px);
   min-width: 150px;
   display: flex;
 }
@@ -219,15 +224,17 @@ body {
   justify-content: center;
   width: 100%;
   height: 100%;
+  max-height: 100%;
 }
 
 .box__inner img {
-  flex: 1;
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
+  max-height: 100%;
   border-radius: 8px;
 }
+
 
 .box p {
   margin: 0;
