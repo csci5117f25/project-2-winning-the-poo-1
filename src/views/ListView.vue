@@ -64,187 +64,141 @@ const deleteMedia = async (itemId) => {
 </script>
 
 <template>
-  <section class="list-container">
-    <h1>MEDIA LIST</h1>
-
-    <div>
-      <h3>IN-PROGRESS</h3>
-      <p v-if="inProgress.length > 0">Your in-progress items will take you about <strong>{{ timeLeftProg }}</strong> minutes to complete.</p>
-    </div>
-    <div class="in-progress">
-      <div v-for="item in inProgress" :key="item.name" class="card">
-          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }">{{ item.name}}</RouterLink>
-          <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
-          <p>{{ item.time }} minutes</p>
-          <button class="remove-btn" @click="requeueMedia(item.id)">Stop</button>
-          <button class="complete-btn" @click="finishMedia(item.id)">Mark Complete</button>
+  <section class="section media-list">
+    <div class="container">
+      <div class="has-text-centered mb-5">
+        <h1 class="title is-3">Your Media List</h1>
+        <p class="subtitle is-6">Track what you're watching right now and what's up next!</p>
       </div>
-      <div v-if="inProgress.length === 0">
-        <p>Start an item</p>
-      </div>
-    </div>
 
-    <div>
-      <h3>QUEUE</h3>
-      <p v-if="queue.length > 0">Your queued items will take you about <strong>{{ timeLeftQueue }}</strong> minutes to complete.</p>
-    </div>
-    <div class="queue">
-      <div v-for="item in queue" :key="item.name" class="card">
-          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }" class="card-title">{{ item.name}}</RouterLink>
-          <img v-if="item.image_url" :src="item.image_url" alt="Cover Image" class="card-img"/>
-          <p>{{ item.time }} minutes</p>
-          <div class="buttons">
-            <button class="card-btn" @click="startMedia(item.id)">Start</button>
-            <button class="remove-btn" @click="deleteMedia(item.id)">Remove</button>
+      <div class="mb-4">
+        <div class="is-flex is-align-items-center" style="gap: 1rem;">
+          <h2 class="title is-5 mb-0">In Progress</h2>
+
+          <p v-if="inProgress && inProgress.length === 0" class="has-text-grey is-size-8">
+            About <strong>{{ timeLeftProg }}</strong> minutes left
+          </p>
+        </div>
+
+        <div class="scroll-row mt-3">
+          <div v-for="item in inProgress" :key="item.id" class="card scroll-card">
+            <div class="card-image" v-if="item.image_url">
+              <figure class="image is-3by4">
+                <img :src="item.image_url" alt="Cover Image" class="cover-img"/>
+              </figure>
+            </div>
+
+            <div class="card-content">
+              <p class="title is-6 mb-2">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }" class="has-text-dark">
+                  {{ item.name }}
+                </RouterLink>
+              </p>
+
+              <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
+
+              <div class="buttons are-small is-flex is-flex-direction-column">
+                <button class="button is-danger is-light is-fullwidth" @click="requeueMedia(item.id)">
+                  Remove
+                </button>
+                <!-- add edit progress? -->
+                <button class="button is-success is-fullwidth" @click="finishMedia(item.id)">
+                  Mark Complete
+                </button>
+              </div>
+            </div>
           </div>
+
+          <div v-if="inProgress && inProgress.length === 0" class="notification is-light scroll-empty">
+            <p class="mb-0">Nothing in progress yet. Start something from your queue!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <div class="is-flex is-align-items-center" style="gap: 1rem;">
+          <h2 class="title is-5 mb-0">Queue</h2>
+
+          <p v-if="queue && queue.length === 0" class="has-text-grey is-size-8 mb-0" >
+            About <strong>{{ timeLeftQueue }}</strong> minutes total
+          </p>
+        </div>
+
+        <div class="scroll-row mt-3">
+          <div v-for="item in queue" :key="item.id" class="card scroll-card">
+            <div class="card-image" v-if="item.image_url">
+              <figure class="image is-3by4">
+                <img :src="item.image_url" alt="Cover Image" class="cover-img" />
+              </figure>
+            </div>
+
+            <div class="card-content">
+              <div class="is-flex is-justify-content-space-between">
+              <p class="title is-6 mb-2">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }" class="has-text-dark">
+                  {{ item.name }}
+                </RouterLink>
+              </p>
+
+              <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
+              </div>
+
+              <div class="buttons are-small is-flex is-flex-direction-column">
+                <button class="button is-primary is-fullwidth" @click="startMedia(item.id)">
+                  Start
+                </button>
+                <button class="button is-danger is-light is-fullwidth" @click="deleteMedia(item.id)">
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="queue && queue.length === 0" class="notification is-light scroll-empty">
+            <p class="mb-0">Your queue is empty. Add something!</p>
+          </div>
+        </div>
       </div>
     </div>
-
   </section>
-
 </template>
 
 <style scoped>
-h1 {
-  text-align: center;
-  margin-bottom: 0;
-}
-.list-container {
-  margin-top: 60px;
+.scroll-row {
   display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  margin-top: 60px;
-}
-.in-progress {
-    background-color: rgb(10, 10, 10);
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 10px 0;
-}
-.highlight {
-  font-weight: 700;
-  color: #111827;
-}
-.card {
-    background: white;
-    padding: 1rem;
-    border-radius: 12px;
-    width: 15vw;
-    height: auto;
-    margin: 1rem;
-    box-shadow: 0px 8px 28px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+  overflow-x: auto;
+  padding: 0.75rem 0.25rem;
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
 }
 
-.card-title {
-  text-decoration: none;
-  color: #111827;
-  font-weight: 600;
-  font-size: 0.95rem;
+.scroll-card {
+  scroll-snap-align: start;
+  flex: 0 0 220px;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
-
-.card-img {
-  width: 100%;
-  height: 200px;
-  margin-top: 1em;
+.cover-img {
   object-fit: cover;
-  border-radius: 8px;
 }
 
-.card a {
-    text-decoration: none;
-    color: black;
+.scroll-empty {
+  flex: 0 0 320px;
+  align-self: center;
 }
 
-.card:hover {
-  transform: scale(1.05);
+.scroll-row::-webkit-scrollbar {
+  height: 8px;
 }
-
-.buttons {
-  display: flex;
-  gap: 1em;
+.scroll-row::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
 }
-
-.card-btn, .remove-btn {
-  cursor: pointer;
-  border: none;
-  padding: 1em;
-  border-radius: 5px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  width: 80px;
-}
-
-.card-btn {
-  background-color: #4caf50;
-  color: white;
-}
-
-.card-btn:hover {
-  background-color: #3b8d40;
-  transform: scale(1.05);
-}
-
-.remove-btn {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.remove-btn:hover {
-  background-color: #c0392b;
-  transform: scale(1.05);
-}
-
-.complete-btn {
-  background-color: #4caf50;
-  color: white;
-}
-
-.complete-btn:hover {
-  background-color: #4caf50;
-  transform: scale(1.05);
-}
-
-.queue {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 1em;
-    background-color: rgb(10, 10, 10);
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-}
-
-.in-progress::-webkit-scrollbar, .queue::-webkit-scrollbar {
-  height: 6px;
-}
-.in-progress::-webkit-scrollbar-thumb, .queue::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,0.3);
-  border-radius: 3px;
-}
-
 
 @media (max-width: 600px) {
-  .card {
-    min-width: 120px;
-    max-width: 160px;
-    padding: 8px;
+  .scroll-card {
+    flex-basis: 180px;
   }
-  h1 {
-    font-size: 1.5rem;
-  }
-  p {
-    font-size: 0.8rem;
-  }
-
 }
 </style>
