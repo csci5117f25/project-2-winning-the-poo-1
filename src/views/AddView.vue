@@ -3,8 +3,13 @@ import MediaSearch from '../components/MediaSearch.vue'
 </script>
 
 <template>
+    <!-- search bar -->
   <div class="search-field">
-    <h1>Add Media</h1>
+    <div class="header">
+      <h1>Search Media</h1>
+      <p>Find something new to watch or play.</p>
+    </div>
+
     <MediaSearch/>
   </div>
 </template>
