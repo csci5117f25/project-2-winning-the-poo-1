@@ -1,24 +1,22 @@
-const API_KEY = import.meta.env.VITE_RAWG_API_KEY
-const API_URL = 'https://api.rawg.io/api'
-
-async function requestRAWG(endpoint, params = {}) {
-  params.key = API_KEY
-  const query = new URLSearchParams(params).toString()
-
-  const response = await fetch(`${API_URL}${endpoint}?${query}`)
-
-  if (!response.ok) {
-    throw new Error('RAWG API Error')
-  }
-
-  return await response.json()
-}
+import { httpsCallable } from 'firebase/functions'
+import { functions } from '../firebase_conf'
 
 export default {
-  searchGames(query) {
-    return requestRAWG('/games', { search: query })
+  async searchGames(query) {
+    const searchGamesFunction = httpsCallable(functions, 'searchGames')
+    const result = await searchGamesFunction({ query })
+    return result.data
   },
-  getGameDetails(id) {
-    return requestRAWG(`/games/${id}`)
+
+  async getGameDetails(id) {
+    const getGameDetailsFunction = httpsCallable(functions, 'getGameDetails')
+    const result = await getGameDetailsFunction({ id })
+    return result.data
   },
+
+  async getTrendingGames() {
+    const getTrendingGamesFunction = httpsCallable(functions, 'getTrendingGames')
+    const result = await getTrendingGamesFunction()
+    return result.data
+  }
 }
