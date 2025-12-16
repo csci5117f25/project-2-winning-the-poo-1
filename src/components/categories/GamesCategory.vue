@@ -18,11 +18,11 @@ const addedGameIds = ref(new Set());
 
 const isLoading = ref(false);
 
-// UI state for each movie item
+// UI state for each game item
 const uiState = ref({});
 
-// Check UI state exists for a movie card
-function ensureState(id) { // Id here is the movie id
+// Check UI state exists for a game card
+function ensureState(id) { // Id here is the game id
   if (!uiState.value[id]) {
     uiState.value[id] = { justAdded: false };
   }
@@ -30,11 +30,11 @@ function ensureState(id) { // Id here is the movie id
 }
 
 async function loadPopularGames() {
-  const data = await rawgService.getTrendingGames()
+  const data = await rawgService.getTrendingGames(20)
   return { items: data.results || [] }
 }
 
-// Load movies based on query or trending
+// Load games based on query or trending
 async function loadGames(query) {
   isLoading.value = true;
   try {
@@ -43,18 +43,18 @@ async function loadGames(query) {
     if (query) {
       data = await rawgService.searchGames(query);
     } else {
-      //data = await tmdbService.getTrendingMovies();
       data = await loadPopularGames(); // prolly want to adjust this number. or we make it so that user loads?
     }
 
-    items.value = (data.results || []).map(g => { // g is for each game
+    const results = data.results || data.items || [];
+
+    items.value = results.map(g => { // g is for each game
       ensureState(g.id);
-      let imageUrl = null; // Later if image is null then we use the placeholder
 
       return {
         id: g.id,
-        title: g.title,
-        image: imageUrl,
+        title: g.name,
+        image: g.background_image,
         rating: g.rating,
         released: g.released
       };
@@ -62,14 +62,14 @@ async function loadGames(query) {
 
 
   } catch (e) {
-    console.error("Error loading movies:", e);
+    console.error("Error loading games:", e);
   } finally {
     isLoading.value = false;
   }
 }
 
 // Get user's added movie IDs to disable add button
-async function getUserMovieIds() {
+async function getUserGameIds() {
   const user = auth.currentUser;
   if (!user) {
     return;
@@ -115,7 +115,9 @@ const addtoBacklog = async (gameData) => {
       return;
     }
 
-    const details = await rawgService.getMovieDetails(gameData.id);
+    const details = await rawgService.getGameDetails(gameData.id);
+
+    // note playtime is in hours, not minutes
 
     const backlogItem = {
       rawg_id: details.id,
@@ -151,7 +153,7 @@ watch(() => props.query, (newVal) => {
 });
 
 onMounted(async () => {
-  await getUserMovieIds();
+  await getUserGameIds();
   loadGames(props.query);
 });
 </script>
@@ -166,14 +168,14 @@ onMounted(async () => {
         <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
 
           <div class="media-card-wrapper">
-            <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'movie' } }">
+            <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'game' } }">
               <figure class="image is-2by3">
                 <img :src="item.image || placeholder" class="poster-image" alt="Game Poster" />
               </figure>
             </RouterLink>
             <button class="button is-dark is-rounded is-small floating-btn"
               :class="{ 'is-animating': uiState[item.id]?.justAdded }" @click.stop="addtoBacklog(item)"
-              :disabled="addedMovieIds.has(item.id)">
+              :disabled="addedGameIds.has(item.id)">
 
               <template v-if="uiState[item.id]?.justAdded">
                 <DotLottieVue :data="checkmarkJson" autoplay :loop="false" :speed="0.7"
@@ -181,7 +183,7 @@ onMounted(async () => {
               </template>
               <template v-else>
                 <span class="icon is-small icon-box">
-                  <template v-if="addedMovieIds.has(item.id)">
+                  <template v-if="addedGameIds.has(item.id)">
                     <svg class="static-check" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="3"
                         stroke-linecap="round" stroke-linejoin="round" />

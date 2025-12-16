@@ -190,9 +190,10 @@ export const searchGames = onCall({ secrets: [RAWG_API_KEY] }, async (request) =
   return await response.json()
 })
 
-export const getTrendingGames = onCall({ secrets: [RAWG_API_KEY] }, async () => {
+export const getTrendingGames = onCall({ secrets: [RAWG_API_KEY] }, async (request) => {
   const API_KEY = RAWG_API_KEY.value()
-  const url = `${RAWG_API_URL}/games?key=${API_KEY}&ordering=-rating`
+  const maxResults = request.data.pageSize || 20
+  const url = `${RAWG_API_URL}/games?key=${API_KEY}&page_size=${maxResults}&ordering=-metacritic`
 
   const response = await fetch(url)
 
