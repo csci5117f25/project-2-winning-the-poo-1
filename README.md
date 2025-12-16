@@ -6,7 +6,7 @@ CSCI 5117, Fall 2025, [assignment description](https://canvas.umn.edu/courses/51
 
 * Team Name: winning the poo
 * App Name: MediaQ
-* App Link: <https://TODO.com/>
+* App Link: <https://project-2-wtp.firebaseapp.com/>
 
 ### Students
 

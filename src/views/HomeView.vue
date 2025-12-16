@@ -4,6 +4,8 @@ import { useCurrentUser, useCollection } from 'vuefire'
 import { collection } from 'firebase/firestore'
 import { db } from '../firebase_conf'
 import { gsap } from 'gsap'
+import GsapCarousel from '../components/GsapCarousel.vue';
+
 
 const user = useCurrentUser()
 
@@ -131,4 +133,7 @@ onMounted(() => {
       </div>
     </div>
   </section>
+  <div>
+    <GsapCarousel :items="items"/>
+  </div>
 </template>

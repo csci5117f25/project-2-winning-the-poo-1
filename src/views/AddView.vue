@@ -4,7 +4,6 @@ import MediaSearch from '../components/MediaSearch.vue'
 
 <template>
   <div class="search-field">
-    <h1>Add Media</h1>
     <MediaSearch/>
   </div>
 </template>

@@ -12,7 +12,7 @@ const route = useRoute()
 const user = useCurrentUser()
 
 const id = computed(() => String(route.params.id ?? ''))
-const type = computed(() => String(route.query.type ?? 'movie')) // movie | tv | book
+const type = computed(() => String(route.query.type ?? 'movie'))
 
 // load API details
 const media = ref(null)
