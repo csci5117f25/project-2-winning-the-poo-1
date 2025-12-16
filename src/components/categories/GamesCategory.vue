@@ -30,7 +30,7 @@ function ensureState(id) { // Id here is the game id
 }
 
 async function loadPopularGames() {
-  const data = await rawgService.getTrendingGames(20)
+  const data = await rawgService.getTrendingGames(40)
   return { items: data.results || [] }
 }
 
@@ -170,7 +170,7 @@ onMounted(async () => {
 
           <div class="media-card-wrapper">
             <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'game' } }">
-              <figure class="image is-2by3">
+              <figure class="image is-16by9">
                 <img :src="item.image || placeholder" class="poster-image" alt="Game Poster" />
               </figure>
             </RouterLink>

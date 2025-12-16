@@ -14,7 +14,7 @@ export default {
     return result.data
   },
 
-  async getTrendingGames(maxResults = 20) {
+  async getTrendingGames(maxResults = 40) {
     const getTrendingGamesFunction = httpsCallable(functions, 'getTrendingGames')
     const result = await getTrendingGamesFunction({ maxResults })
     return result.data
