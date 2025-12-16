@@ -8,11 +8,16 @@ import GamesCategory from '../components/categories/GamesCategory.vue';
 
 const activeTab = ref('MOVIES');
 const searchQuery = ref('');
+const committedQuery = ref('');
 const categories = ['MOVIES', 'TV SHOWS', 'BOOKS', 'GAMES', 'OTHER'];
 
 const setCategory = (cat) => {
   activeTab.value = cat;
 };
+
+const handleSearch = () => {
+  committedQuery.value = searchQuery.value
+}
 
 const componentMap = {
   'MOVIES': MoviesCategory,
@@ -31,8 +36,15 @@ const activeComponent = computed(() => componentMap[activeTab.value])
 
         <div class="columns is-centered mb-5">
           <div class="column is-half">
-            <input class="input is-rounded is-medium has-text-centered has-text-weight-bold" type="text"
-              placeholder="SEARCH FOR TITLE" v-model="searchQuery" style="text-transform: uppercase;">
+            <div class="field hass-addons">
+              <div class="control is-expanded">
+                <input class="input is-rounded is-medium has-text-centered has-text-weight-bold" type="text"
+                placeholder="SEARCH FOR TITLE" v-model="searchQuery" style="text-transform: uppercase;" @keyup.enter="handleSearch">
+              </div>
+              <div class="control">
+                <button class="button is-primary -isrounded -ismedium" @click="handleSearch">SEARCH</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -47,7 +59,7 @@ const activeComponent = computed(() => componentMap[activeTab.value])
 
         <div class="content-wrapper">
           <KeepAlive>
-            <component v-if="activeComponent" :is="activeComponent" :key="activeTab" :query="searchQuery" />
+            <component v-if="activeComponent" :is="activeComponent" :key="activeTab" :query="committedQuery" />
           </KeepAlive>
         </div>
 

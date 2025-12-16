@@ -148,6 +148,7 @@ const addtoBacklog = async (bookData) => {
 }
 
 watch(() => props.query, (newVal) => {
+  items.value = []
   loadBooks(newVal)
 })
 

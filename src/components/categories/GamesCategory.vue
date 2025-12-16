@@ -149,6 +149,7 @@ const addtoBacklog = async (gameData) => {
 }
 
 watch(() => props.query, (newVal) => {
+  items.value = []
   loadGames(newVal);
 });
 
@@ -209,6 +210,9 @@ onMounted(async () => {
 
 .poster-image {
   border-radius: 25px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .floating-btn {

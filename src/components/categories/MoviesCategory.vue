@@ -155,6 +155,7 @@ const addtoBacklog = async (movieData) => {
 }
 
 watch(() => props.query, (newVal) => {
+  items.value = []
   loadMovies(newVal);
 });
 
