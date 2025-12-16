@@ -125,6 +125,7 @@ const addtoBacklog = async (movieData) => {
   padding: 0.75rem 1rem;
   border-radius: 10px;
   width: 25vw;
+  height: 48px;
 }
 @media (max-width: 640px) {
   .search-input {
