@@ -1,58 +1,46 @@
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY
-const API_URL = 'https://api.themoviedb.org/3'
-
-async function requestTMDB(endpoint, params = {}) {
-  params.api_key = API_KEY
-  const query = new URLSearchParams(params).toString()
-
-  const response = await fetch(`${API_URL}${endpoint}?${query}`)
-
-  if (!response.ok) {
-    throw new Error('TMDB API Error')
-  }
-
-  return await response.json()
-}
-
-async function getPopularMovie(page = 1) {
-  const url = `${API_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
-
-  const response = await fetch(url)
-
-  if (!response.ok) {
-    throw new Error('TMDB API Error')
-  }
-
-  return await response.json()
-}
-
-async function getPopularTV(page = 1) {
-  const url = `${API_URL}/tv/popular?api_key=${API_KEY}&page=${page}`
-  const response = await fetch(url)
-  if (!response.ok) throw new Error('TMDB API Error')
-  return await response.json()
-}
+import { httpsCallable } from 'firebase/functions'
+import { functions } from '../firebase_conf'
 
 export default {
-  searchMovies(query) {
-    return requestTMDB('/search/movie', { query })
+  async searchMovies(query) {
+    const searchMoviesFunction = httpsCallable(functions, 'searchMovies')
+    const result = await searchMoviesFunction({ query })
+    return result.data
   },
-  getMovieDetails(id) {
-    return requestTMDB(`/movie/${id}`)
+
+  async getMovieDetails(id) {
+    const getMovieDetailsFunction = httpsCallable(functions, 'getMovieDetails')
+    const result = await getMovieDetailsFunction({ id })
+    return result.data
   },
-  getTrendingMovies() {
-    return requestTMDB(`/trending/movie/week`)
+
+  async getTrendingMovies() {
+    const getTrendingMoviesFunction = httpsCallable(functions, 'getTrendingMovies')
+    const result = await getTrendingMoviesFunction()
+    return result.data
   },
-  getPopularMovies(page = 1) {
-    return getPopularMovie(page)
+
+  async getPopularMovies(page = 1) {
+    const getPopularMoviesFunction = httpsCallable(functions, 'getPopularMovies')
+    const result = await getPopularMoviesFunction({ page })
+    return result.data
   },
-  searchShow(query) {
-    return requestTMDB('/search/tv', { query })
+
+  async searchShow(query) {
+    const searchShowFunction = httpsCallable(functions, 'searchShow')
+    const result = await searchShowFunction({ query })
+    return result.data
   },
-  getShowDetails(id) {
-    return requestTMDB(`/tv/${id}`)
+
+  async getShowDetails(id) {
+    const getShowDetailsFunction = httpsCallable(functions, 'getShowDetails')
+    const result = await getShowDetailsFunction({ id })
+    return result.data
   },
-  getPopularShows(page = 1) {
-    return getPopularTV(page)
+
+  async getPopularShows(page = 1) {
+    const getPopularShowsFunction = httpsCallable(functions, 'getPopularShows')
+    const result = await getPopularShowsFunction({ page })
+    return result.data
   },
 }
