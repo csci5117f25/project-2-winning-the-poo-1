@@ -15,6 +15,13 @@ let complete = useCollection(completedQuery)
 const period = ref('month')
 const selectedCategory = ref('all')
 
+const totalFilteredMinutes = computed(() => {
+  return filteredCompleted.value.reduce(
+    (sum, item) => sum + item.time,
+    0
+  )
+})
+
 function isWithinPeriod(timestamp, period) {
   if (!timestamp) return false
 
@@ -247,6 +254,11 @@ function dateCompletedAt(timestamp) {
 <div class="chart">
   <StatsLineChart :data="chartData" />
 </div>
+
+<h4 class="title is-4 has-text-centered">
+  Total time consuming media: {{ totalFilteredMinutes }} minutes
+</h4>
+
 </template>
 
 
@@ -280,5 +292,7 @@ h3, p {
   text-align: center;
 }
 
-
+h4{
+  margin-bottom: 20px;
+}
 </style>
