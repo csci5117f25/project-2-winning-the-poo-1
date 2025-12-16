@@ -103,11 +103,11 @@ async function logout() {
       MEDIAQ
     </RouterLink>
 
-    <template v-if="user">
-      <RouterLink to="/add" class="navbar-item" active-class="is-active">ADD</RouterLink>
-      <RouterLink to="/categories" class="navbar-item" active-class="is-active">CATEGORIES</RouterLink>
-      <RouterLink to="/list" class="navbar-item" active-class="is-active">LIST</RouterLink>
-    </template>
+    <div v-if="user" class="nav-links is-flex">
+      <RouterLink to="/add" class="navbar-item link" active-class="is-active ">ADD</RouterLink>
+      <RouterLink to="/categories" class="navbar-item link" active-class="is-active">CATEGORIES</RouterLink>
+      <RouterLink to="/list" class="navbar-item link" active-class="is-active">LIST</RouterLink>
+    </div>
   </div>
 
   <div class="navbar-end">
@@ -174,6 +174,7 @@ async function logout() {
   align-items: center;
   justify-content: space-between;
   padding: 0 0.75rem;
+  border-bottom: 1px solid white;
 }
 
 .navbar-left {
@@ -186,7 +187,7 @@ async function logout() {
 
 .brand {
   font-weight: 800;
-  font-size: 2rem;
+  font-size: 1.75rem;
   margin-right: 0.75rem;
 }
 
@@ -194,23 +195,31 @@ async function logout() {
   padding: 0.5rem 0.75rem;
 }
 
-.brand {
-  font-weight: 800;
-  font-size: 1.25rem;
-  margin-right: 1rem;
+
+.profile-link:hover {
+  background-color: transparent;
 }
 
-.nav {
-  color: white;
-  text-decoration: none;
-  font-size: large;
-  margin: 10px;
-}
 /* no bottom nav on desktop */
 .bottom-nav {
   display: none;
 }
 
+.navbar-item.is-active {
+  color: white;;
+}
+
+a.link {
+  text-decoration: none;
+  transition: all 0.2s;
+  position: relative;
+  color: lightgray;
+}
+
+a.link:hover {
+  text-shadow: 2px 2px 3px rgba(166, 166, 166, 0.7);
+  color: white;
+}
 
 
 @media (max-width: 640px) {
