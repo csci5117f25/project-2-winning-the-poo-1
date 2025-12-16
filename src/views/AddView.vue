@@ -7,7 +7,7 @@ import MediaSearch from '../components/MediaSearch.vue'
     <section class="section">
       <div class="container">
         <div class="columns is-centered mb-5">
-          <div class="column is-half">
+          <div class="column is-full">
             <MediaSearch/>
           </div>
         </div>
