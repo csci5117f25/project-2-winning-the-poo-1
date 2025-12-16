@@ -12,6 +12,7 @@ CSCI 5117, Fall 2025, [assignment description](https://canvas.umn.edu/courses/51
 
 * wendy meng, meng0219@umn.edu
 * Theo Nguyen, nguy4803
+* Daniel Wang, wan01271
 
 
 ## Key Features
