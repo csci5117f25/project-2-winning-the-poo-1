@@ -117,6 +117,7 @@ const addToBacklog = async (showData) => {
 };
 
 watch(() => props.query, (newVal) => {
+  items.value = []
   loadShows(newVal);
 });
 
