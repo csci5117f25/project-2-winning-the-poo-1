@@ -21,4 +21,7 @@ export default {
   getGameDetails(id) {
     return requestRAWG(`/games/${id}`)
   },
+  getTrendingGames() {
+    return requestRAWG(`/games?ordering=rating`)
+  }
 }
