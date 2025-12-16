@@ -93,7 +93,9 @@ const completedTime = computed(() => //I thought this needed curly brackets? idk
 )
 
 const completedMessage = computed(() => {
+  if (completedTime.value >= 1440) return "That's more than a day- keep it up!"
   if (completedTime.value >= 1000) return "Amazing!"
+  if (completedTime.value >= 660) return "That's longer than it would take to watch the enture extended Lord of the Rings trilogy!"
   if (completedTime.value >= 300) return "Wow, That's a lot of content!"
   if (completedTime.value >= 60) return "Nice progress!"
   if (completedTime.value > 0) return "Just getting started!"
