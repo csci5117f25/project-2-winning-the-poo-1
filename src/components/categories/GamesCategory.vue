@@ -168,7 +168,7 @@ onMounted(async () => {
           <div class="media-card-wrapper">
             <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'movie' } }">
               <figure class="image is-2by3">
-                <img :src="item.image || placeholder" class="poster-image" alt="Movie Poster" />
+                <img :src="item.image || placeholder" class="poster-image" alt="Game Poster" />
               </figure>
             </RouterLink>
             <button class="button is-dark is-rounded is-small floating-btn"
