@@ -7,10 +7,10 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-const { setGlobalOptions } = require("firebase-functions");
-const { onCall } = require("firebase-functions/v2/https");
-const { defineSecret } = require("firebase-functions/params")
-const { initializeApp } = require("firebase-admin/app")
+import { setGlobalOptions } from "firebase-functions"
+import { onCall } from "firebase-functions/v2/https"
+import { defineSecret } from "firebase-functions/params"
+import { initializeApp } from "firebase-admin/app"
 
 // For cost control, you can set the maximum number of containers that can be
 // running at the same time. This helps mitigate the impact of unexpected
@@ -34,7 +34,7 @@ const TMDB_API_URL = 'https://api.themoviedb.org/3'
 const RAWG_API_URL = 'https://api.rawg.io/api'
 const GBOOKS_API_URL = 'https://www.googleapis.com/books/v1'
 
-exports.searchMovies = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
+export const searchMovies = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   const query = request.data.query
   const API_KEY = TMDB_API_KEY.value()
   const url = `${TMDB_API_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
@@ -48,7 +48,7 @@ exports.searchMovies = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   return await response.json()
 })
 
-exports.getMovieDetails = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
+export const getMovieDetails = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   const id = request.data.id
   const API_KEY = TMDB_API_KEY.value()
   const url = `${TMDB_API_URL}/movie/${id}?api_key=${API_KEY}`
@@ -62,7 +62,7 @@ exports.getMovieDetails = onCall({ secrets: [TMDB_API_KEY] }, async (request) =>
   return await response.json()
 })
 
-exports.getTrendingMovies = onCall({ secrets: [TMDB_API_KEY] }, async () => {
+export const getTrendingMovies = onCall({ secrets: [TMDB_API_KEY] }, async () => {
   const API_KEY = TMDB_API_KEY.value()
   const url = `${TMDB_API_URL}/trending/movie/week?api_key=${API_KEY}`
 
@@ -75,7 +75,7 @@ exports.getTrendingMovies = onCall({ secrets: [TMDB_API_KEY] }, async () => {
   return await response.json()
 })
 
-exports.getPopularMovies = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
+export const getPopularMovies = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   const page = request.data.page
   const API_KEY = TMDB_API_KEY.value()
   const url = `${TMDB_API_URL}/movie/popular?api_key=${API_KEY}&page=${encodeURIComponent(page)}`
@@ -89,7 +89,7 @@ exports.getPopularMovies = onCall({ secrets: [TMDB_API_KEY] }, async (request) =
   return await response.json()
 })
 
-exports.searchShow = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
+export const searchShow = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   const query = request.data.query
   const API_KEY = TMDB_API_KEY.value()
   const url = `${TMDB_API_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
@@ -103,7 +103,7 @@ exports.searchShow = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   return await response.json()
 })
 
-exports.getShowDetails = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
+export const getShowDetails = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   const id = request.data.id
   const API_KEY = TMDB_API_KEY.value()
   const url = `${TMDB_API_URL}/tv/${id}?api_key=${API_KEY}`
@@ -117,7 +117,7 @@ exports.getShowDetails = onCall({ secrets: [TMDB_API_KEY] }, async (request) => 
   return await response.json()
 })
 
-exports.getPopularShows = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
+export const getPopularShows = onCall({ secrets: [TMDB_API_KEY] }, async (request) => {
   const page = request.data.page
   const API_KEY = TMDB_API_KEY.value()
   const url = `${TMDB_API_URL}/tv/popular?api_key=${API_KEY}&page=${encodeURIComponent(page)}`
@@ -131,7 +131,7 @@ exports.getPopularShows = onCall({ secrets: [TMDB_API_KEY] }, async (request) =>
   return await response.json()
 })
 
-exports.searchBooks = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) => {
+export const searchBooks = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) => {
   const query = request.data.query
   const startIndex = request.data.startIndex || 0
   const maxResults = request.data.maxResults || 20
@@ -147,7 +147,7 @@ exports.searchBooks = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) => {
   return await response.json()
 })
 
-exports.getTrendingBooks = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) => {
+export const getTrendingBooks = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) => {
   const startIndex = request.data.startIndex || 0
   const maxResults = request.data.maxResults || 20
   const API_KEY = GBOOKS_API_KEY.value()
@@ -162,7 +162,7 @@ exports.getTrendingBooks = onCall({ secrets: [GBOOKS_API_KEY] }, async (request)
   return await response.json()
 })
 
-exports.getBookDetails = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) => {
+export const getBookDetails = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) => {
   const id = request.data.id
   const API_KEY = GBOOKS_API_KEY.value()
   const url = `${GBOOKS_API_URL}/volumes/${id}?key=${API_KEY}`
@@ -176,7 +176,7 @@ exports.getBookDetails = onCall({ secrets: [GBOOKS_API_KEY] }, async (request) =
   return await response.json()
 })
 
-exports.searchGames = onCall({ secrets: [RAWG_API_KEY] }, async (request) => {
+export const searchGames = onCall({ secrets: [RAWG_API_KEY] }, async (request) => {
   const query = request.data.query
   const API_KEY = RAWG_API_KEY.value()
   const url = `${RAWG_API_URL}/games?key=${API_KEY}&search=${encodeURIComponent(query)}`
@@ -190,7 +190,7 @@ exports.searchGames = onCall({ secrets: [RAWG_API_KEY] }, async (request) => {
   return await response.json()
 })
 
-exports.getTrendingGames = onCall({ secrets: [RAWG_API_KEY] }, async () => {
+export const getTrendingGames = onCall({ secrets: [RAWG_API_KEY] }, async () => {
   const API_KEY = RAWG_API_KEY.value()
   const url = `${RAWG_API_URL}/games?key=${API_KEY}&ordering=-rating`
 
@@ -203,7 +203,7 @@ exports.getTrendingGames = onCall({ secrets: [RAWG_API_KEY] }, async () => {
   return await response.json()
 })
 
-exports.getGameDetails = onCall({ secrets: [RAWG_API_KEY] }, async (request) => {
+export const getGameDetails = onCall({ secrets: [RAWG_API_KEY] }, async (request) => {
   const id = request.data.id
   const API_KEY = RAWG_API_KEY.value()
   const url = `${RAWG_API_URL}/games/${id}?key=${API_KEY}`
