@@ -238,9 +238,9 @@ function dateCompletedAt(timestamp) {
 
   <select v-model="selectedCategory">
     <option value="all">All Categories</option>
-    <option value="Movie">Movies</option>
+    <option value="movie">Movies</option>
     <option value="TV">TV</option>
-    <option value="Podcast">Podcasts</option>
+    <option value="book">Books</option>
   </select>
 </div>
 
