@@ -1,9 +1,10 @@
 <script setup>
 import { useCurrentUser, useCollection } from 'vuefire'
 import { collection, query, where, doc, updateDoc } from 'firebase/firestore'
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { db } from '../firebase_conf'
 import CategoriesView from './CategoriesView.vue'
+import StatsLineChart from '@/components/StatsLineChart.vue'
 
 
 const user = useCurrentUser()
@@ -11,6 +12,66 @@ const queueRef = collection(db, 'users', user.value.uid, 'queue');
 const queueItems = useCollection(queueRef);
 const completedQuery = query(queueRef, where("status", "==", "complete"))
 let complete = useCollection(completedQuery)
+const period = ref('month')
+const selectedCategory = ref('all')
+
+function isWithinPeriod(timestamp, period) {
+  if (!timestamp) return false
+
+  const date = timestamp.toDate()
+  const now = new Date()
+
+  if (period === 'month') {
+    return (
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear()
+    )
+  }
+
+  if (period === 'year') {
+    return date.getFullYear() === now.getFullYear()
+  }
+
+  return true
+}
+
+const filteredCompleted = computed(() => {
+  return complete.value.filter(item => {
+    const matchesPeriod = isWithinPeriod(item.completedAt, period.value)
+    const matchesCategory =
+      selectedCategory.value === 'all' ||
+      item.category === selectedCategory.value
+
+    return matchesPeriod && matchesCategory
+  })
+})
+
+const chartData = computed(() => {
+  const map = {}
+
+  filteredCompleted.value.forEach(item => {
+    const date = item.completedAt.toDate()
+
+    let key
+    if (period.value === 'month') {
+      key = date.getDate() // 1–31
+    } else if (period.value === 'year') {
+      key = date.getMonth() // 0–11
+    } else {
+      key = date.toISOString().slice(0, 10) // YYYY-MM-DD
+    }
+
+    map[key] = (map[key] || 0) + item.time
+  })
+
+  return Object.keys(map)
+    .sort((a, b) => a - b)
+    .map(key => ({
+      label: key,
+      value: map[key],
+    }))
+})
+
 
 const inProgressTime = computed(() => //I thought this needed curly brackets? idk man
   queueItems.value.filter(item => item.status === 'in-progress').reduce((accumulator, item) => accumulator + item.time, 0)
@@ -168,10 +229,33 @@ function dateCompletedAt(timestamp) {
       </div>
     </div>
   </div>
+  <div class="filters">
+  <select v-model="period">
+    <option value="month">This Month</option>
+    <option value="year">This Year</option>
+    <option value="all">All Time</option>
+  </select>
+
+  <select v-model="selectedCategory">
+    <option value="all">All Categories</option>
+    <option value="Movie">Movies</option>
+    <option value="TV">TV</option>
+    <option value="Podcast">Podcasts</option>
+  </select>
+</div>
+
+<div class="chart">
+  <StatsLineChart :data="chartData" />
+</div>
 </template>
 
 
 <style scoped>
+.chart{
+  max-width: 50vw;
+  height: 50vh;
+  margin: 0 auto;
+}
 img {
   width: 6rem;
   height: 6rem;
