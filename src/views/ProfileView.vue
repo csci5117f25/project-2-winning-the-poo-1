@@ -270,6 +270,14 @@ function dateCompletedAt(timestamp) {
   height: 50vh;
   margin: 0 auto;
 }
+@media (max-width: 768px) {
+  .chart {
+    max-width: 100%;
+    width: 100%;
+    height: 40vh;
+    min-height: 250px;
+  }
+}
 img {
   width: 6rem;
   height: 6rem;
