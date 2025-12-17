@@ -74,10 +74,10 @@ function formatMediaTime(item) {
   }
 
   switch (item.media_type) {
-    case 'book':
+    case 'book': {
       return `${item.time?.toLocaleString()} pages`
-
-    case 'tv':
+    }
+    case 'tv': {
       const seasons = item.seasons
       const episodes = item.episodes
       let tvTime = []
@@ -88,14 +88,17 @@ function formatMediaTime(item) {
         tvTime.push(`${episodes} episode${episodes !== 1 ? 's': ''}`)
       }
       return tvTime.join(', ')
-
-    case 'game':
+    }
+    case 'game': {
       if (item.time >= 60) {
         const h = Math.floor(item.time / 60)
         return `${h} hour${h !== 1 ? 's' : ''}`
       }
-
-    default:
+    }
+    case 'other': {
+      if (item.unit_type === 'pages') {
+        return `${item.time?.toLocaleString()} pages`
+      }
       const mins = item.time || 0
       if (mins >= 60) {
         const h = Math.floor(mins / 60)
@@ -103,6 +106,16 @@ function formatMediaTime(item) {
         return m > 0 ? `${h}h ${m}m` : `${h} hour${h !== 1 ? 's' : ''}`
       }
       return `${mins} minutes`
+    }
+    default: {
+      const mins = item.time || 0
+      if (mins >= 60) {
+        const h = Math.floor(mins / 60)
+        const m = mins % 60
+        return m > 0 ? `${h}h ${m}m` : `${h} hour${h !== 1 ? 's' : ''}`
+      }
+      return `${mins} minutes`
+    }
   }
 }
 </script>
@@ -134,7 +147,10 @@ function formatMediaTime(item) {
 
             <div class="card-content">
               <p class="title is-6 mb-2">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
+                <template v-if="item.media_type === 'other'">
+                  <span class="has-text-dark">{{  item.name }}</span>
+                </template>
+                <RouterLink v-else :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>
@@ -164,7 +180,7 @@ function formatMediaTime(item) {
         <div class="is-flex is-align-items-center" style="gap: 1rem;">
           <h2 class="title is-5 mb-0">Queue</h2>
 
-          <p v-if="Queue && Queue.length !== 0" class="has-text-grey is-size-8 mb-0" >
+          <p v-if="queue && queue.length !== 0" class="has-text-grey is-size-8 mb-0" >
             About <strong>{{ timeLeftQueue }}</strong> minutes total
           </p>
         </div>
@@ -179,7 +195,10 @@ function formatMediaTime(item) {
 
             <div class="card-content">
               <p class="title is-6 mb-2">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
+                <template v-if="item.media_type === 'other'">
+                  <span class="has-text-dark">{{  item.name }}</span>
+                </template>
+                <RouterLink v-else :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>
@@ -223,7 +242,10 @@ function formatMediaTime(item) {
 
             <div class="card-content">
               <p class="title is-6 mb-0">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
+                <template v-if="item.media_type === 'other'">
+                  <span class="has-text-dark">{{  item.name }}</span>
+                </template>
+                <RouterLink v-else :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>

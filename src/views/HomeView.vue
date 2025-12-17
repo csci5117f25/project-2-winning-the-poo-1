@@ -101,10 +101,10 @@ onMounted(() => {
             <div class="column has-text-centered">
               <p class="heading">Total Time Left</p>
               <p v-if="totalTime >= 1440" class="title has-text-primary">
-                {{ Math.floor(totalTime/1440) }} {{ Math.floor(totalTime/1440) <= 1 ? 'day' : 'days' }} {{ Math.floor((totalTime%1440)/60) }} {{ Math.floor((totalTime%1440)/60) <= 1 ? 'hr' : 'hrs' }}, {{ totalTime%60 }} {{ totalTime%60 <= 1 ? 'min' : 'mins' }}
+                {{ Math.floor(totalTime/1440) }} {{ Math.floor(totalTime/1440) <= 1 ? 'day' : 'days' }}, {{ Math.floor((totalTime%1440)/60) }} {{ Math.floor((totalTime%1440)/60) <= 1 ? 'hr' : 'hrs' }}, {{ totalTime%60 }} {{ totalTime%60 <= 1 ? 'min' : 'mins' }}
               </p>
               <p v-else-if="totalTime >= 60" class="title">
-                {{ Math.floor(totalTime/60) }} {{ Math.floor(totalTime/60) <= 1 ? 'hr' : 'hrs' }} {{ totalTime%60 }} {{ totalTime%60 <= 1 ? 'min' : 'mins' }}
+                {{ Math.floor(totalTime/60) }} {{ Math.floor(totalTime/60) <= 1 ? 'hr' : 'hrs' }}, {{ totalTime%60 }} {{ totalTime%60 <= 1 ? 'min' : 'mins' }}
               </p>
               <p v-else-if="totalTime > 0" class="title">
                 {{ totalTime }} {{ totalTime <= 1 ? 'min' : 'mins' }}

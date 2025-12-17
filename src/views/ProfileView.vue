@@ -38,7 +38,7 @@ const totalFilteredMinutes = computed(() => {
 })
 
 const totalFilteredPages = computed(() => {
-  return filteredCompleted.value.filter(item => item.media_type === 'book').reduce(
+  return filteredCompleted.value.filter(item => item.media_type === 'book' || (item.media_type === 'other' && item.unit_type === 'pages')).reduce(
     (sum, item) => sum + item.time,
     0
   )
@@ -96,6 +96,58 @@ const chartLabel = computed(() => {
   return 'Minutes Consumed'
 })
 
+const otherMinutesData = computed(() => {
+  if (selectedCategory.value !== 'other') {
+    return []
+  }
+
+  const map = {}
+  filteredCompleted.value.filter(item => item.unit_type !== 'pages').forEach(item => {
+    const date = item.completedAt?.toDate()
+    if (!date) {
+      return
+    }
+
+    let key
+    if (period.value === 'month') {
+      key = date.getDate()
+    } else if (period.value === 'year') {
+      key = date.getMonth()
+    } else {
+      key = date.toISOString().slice(0, 10)
+    }
+
+    map[key] = (map[key] || 0) + item.time
+  })
+  return Object.keys(map).sort((a, b) => a - b).map(key => ({ label: key, value: map[key] }))
+})
+
+const otherPagesData = computed(() => {
+  if (selectedCategory.value !== 'other') {
+    return []
+  }
+
+  const map = {}
+  filteredCompleted.value.filter(item => item.unit_type !== 'minutes').forEach(item => {
+    const date = item.completedAt?.toDate()
+    if (!date) {
+      return
+    }
+
+    let key
+    if (period.value === 'month') {
+      key = date.getDate()
+    } else if (period.value === 'year') {
+      key = date.getMonth()
+    } else {
+      key = date.toISOString().slice(0, 10)
+    }
+
+    map[key] = (map[key] || 0) + item.time
+  })
+  return Object.keys(map).sort((a, b) => a - b).map(key => ({ label: key, value: map[key] }))
+})
+
 const chartData = computed(() => {
   const map = {}
 
@@ -134,7 +186,7 @@ const chartData = computed(() => {
 })
 
 function getEffectiveMinutes(item) {
-  if (item.media_type === 'book') {
+  if (item.media_type === 'book' || (item.media_type === 'other' && item.unit_type === 'pages')) {
     return 0
   }
   if (item.media_type === 'tv') {
@@ -166,6 +218,11 @@ function formatMediaTime(item) {
       }
       return tvTime.join(', ')
 
+      case 'other':
+        if (item.unit_type === 'pages') {
+          return `${item.time?.toLocaleString()} pages`
+        }
+        return `${item.time} minutes`
     default:
       return `${item.time} minutes`
   }
@@ -184,15 +241,15 @@ const completedTime = computed(() => //I thought this needed curly brackets? idk
 )
 
 const inProgressPages = computed(() =>
-  queueItems.value.filter(item => item.status === 'in-progress' && item.media_type === 'book').reduce((accumulator, item) => accumulator + item.time, 0)
+  queueItems.value.filter(item => item.status === 'in-progress' && (item.media_type === 'book' || (item.media_type === 'other' && item.unit_type === 'pages'))).reduce((accumulator, item) => accumulator + item.time, 0)
 )
 
 const queuedPages = computed(() => //I thought this needed curly brackets? idk man
-  queueItems.value.filter(item => item.status === 'queued' && item.media_type === 'book').reduce((accumulator, item) => accumulator + item.time, 0)
+  queueItems.value.filter(item => item.status === 'queued' && (item.media_type === 'book' || (item.media_type === 'other' && item.unit_type === 'pages'))).reduce((accumulator, item) => accumulator + item.time, 0)
 )
 
 const completedPages = computed(() => //I thought this needed curly brackets? idk man
-  queueItems.value.filter(item => item.status === 'complete' && item.media_type === 'book').reduce((accumulator, item) => accumulator + item.time, 0)
+  queueItems.value.filter(item => item.status === 'complete' && (item.media_type === 'book' || (item.media_type === 'other' && item.unit_type === 'pages'))).reduce((accumulator, item) => accumulator + item.time, 0)
 )
 
 const completedMessage = computed(() => {
@@ -362,11 +419,19 @@ function dateCompletedAt(timestamp) {
     <div class="columns is-multiline">
       <div v-for="item in complete" :key="item.id" class="column is-6-mobile is-4-tablet is-3-desktop">
         <div class="card">
-            <RouterLink :to="{ name: 'media_w_id', params:
+          <template v-if="item.media_type === 'other'">
+            <div class="card-header-title py-1 px-2 is-centered">
+              <span class="is-clipped">
+                {{ item.name }}
+                <p class="has-text-centered has-text-grey">{{  formatMediaTime(item)  }}</p>
+              </span>
+            </div>
+          </template>
+            <RouterLink v-else :to="{ name: 'media_w_id', params:
               { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type }}" class="card-header-title py-1 px-2 is-centered">
               <span class="is-clipped">
-              {{ item.name }}
-              <p class="has-text-centered has-text-grey">{{ formatMediaTime(item) }}</p>
+                {{ item.name }}
+                <p class="has-text-centered has-text-grey">{{ formatMediaTime(item) }}</p>
               </span>
             </RouterLink>
           <div class="card-image">
@@ -390,9 +455,26 @@ function dateCompletedAt(timestamp) {
     <Select v-model="selectedCategory" :options="categoryOptions" optionLabel="label" optionValue="value" size="small" placeholder="Select Category" />
   </div>
 
-<div class="chart">
+<div class="chart" v-if="selectedCategory !== 'other'">
   <StatsLineChart :data="chartData" :label="chartLabel" />
 </div>
+
+<template v-if="selectedCategory === 'other'">
+  <div class="columns">
+    <div class="column">
+      <h5 class="title is-6 has-text-centered">Minutes</h5>
+      <div class="chart-small">
+        <StatsLineChart :data="otherMinutesData" label="Minutes Consumed" />
+      </div>
+    </div>
+    <div class="column">
+      <h5 class="title is-6 has-text-centered">Pages</h5>
+      <div class="chart-small">
+        <StatsLineChart :data="otherPagesData" label="Pages Read" />
+      </div>
+    </div>
+  </div>
+</template>
 
 <h4 class="title is-4 has-text-centered">
   Total time consumed filtered media: {{ totalDays > 0 ? totalDays + (totalDays === 1 ? ' day' : ' days') + ', ' : '' }}{{ remainderHours > 0 ? remainderHours + (remainderHours === 1 ? ' hour' : ' hours') + ', ' : '' }}{{ remainderMinutes > 0 ? remainderMinutes + (remainderMinutes === 1 ? ' minute' : ' minutes') : '0 minutes' }}
@@ -450,5 +532,11 @@ h4{
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.chart-small {
+  max-width: 100%;
+  height: 35vh;
+  margin: 0 auto;
 }
 </style>

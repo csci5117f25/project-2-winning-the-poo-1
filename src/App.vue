@@ -16,4 +16,9 @@ main {
   background: white;
 }
 
+@media (max-width: 640px) {
+  body {
+    padding-bottom: 70px;
+  }
+}
 </style>
