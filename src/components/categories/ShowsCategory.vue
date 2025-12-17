@@ -14,6 +14,7 @@ const items = ref([]);
 
 const addedIds = ref(new Set()); // tv ids already added
 const uiState = ref({});
+const isLoading = ref(false);
 
 function ensureState(id) {
   if (!uiState.value[id]) uiState.value[id] = { justAdded: false };
@@ -30,6 +31,7 @@ async function loadPopularShows(pages = 1) {
 }
 
 async function loadShows(q) {
+  isLoading.value = true
   try {
     let data;
     if (q) {
@@ -48,6 +50,8 @@ async function loadShows(q) {
     });
   } catch (e) {
     console.error("Error loading shows:", e);
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -129,6 +133,9 @@ onMounted(async () => {
 
 <template>
   <div>
+    <div v-if="isLoading" class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
     <div class="columns is-multiline is-mobile">
       <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
         <div class="media-card-wrapper">
@@ -196,5 +203,30 @@ onMounted(async () => {
 
 .floating-btn:hover {
   transform: scale(1.1);
+}
+
+/* stole this from https://www.w3schools.com/howto/howto_css_loader.asp */
+.loader-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: lightgray;
+}
+
+.loader {
+  border: 12px solid #e0e0e0;
+  border-top: 12px solid #9e9e9e;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
