@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watchEffect } from 'vue'
+import { computed, nextTick, ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCurrentUser, useCollection } from 'vuefire'
 import { db } from '../firebase_conf'
@@ -13,9 +13,10 @@ const user = useCurrentUser()
 
 const id = computed(() => String(route.params.id ?? ''))
 const type = computed(() => String(route.query.type ?? 'movie'))
+console.log(id.value, type.value)
 
 // load API details
-const media = ref(null)
+const media = ref(undefined)
 const loading = ref(true)
 const error = ref('')
 
@@ -23,7 +24,7 @@ watchEffect(async () => {
   if (!id.value) return
   loading.value = true
   error.value = ''
-  media.value = null
+  media.value = undefined
 
   try {
     if (type.value === 'book') {
@@ -68,6 +69,8 @@ watchEffect(async () => {
   } catch {
     error.value = 'Failed to load media'
   } finally {
+    console.log("Setting loading.val to false...")
+    console.log(media.value)
     loading.value = false
   }
 })
@@ -87,14 +90,14 @@ const queueQuery = computed(() => {
 })
 
 // Check if already in queue
-const matches = useCollection(queueQuery)
+const matches = useCollection(queueQuery, {ssrKey: 'MediaId'})
 const inQueue = computed(() => (matches.value?.length || 0) > 0)
 
 async function addToQueue() {
   if (!user.value || !media.value) {
     return
   }
-
+  await nextTick()
   const queueRef = collection(db, 'users', user.value.uid, 'queue')
 
   const base = {
@@ -122,6 +125,7 @@ async function addToQueue() {
 </script>
 
 <template>
+  <div v-if="media">
     <div class="container move-down">
       <div class="card">
         <div class="card-content columns">
@@ -165,6 +169,8 @@ async function addToQueue() {
         </div>
       </div>
     </div>
+  </div>
+  <div v-else><p>DEBUG: Media is undefined.</p></div>
 </template>
 
 <style scoped>
