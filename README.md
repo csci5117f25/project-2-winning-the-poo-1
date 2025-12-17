@@ -11,8 +11,10 @@ CSCI 5117, Fall 2025, [assignment description](https://canvas.umn.edu/courses/51
 ### Students
 
 * wendy meng, meng0219@umn.edu
-* Theo Nguyen, nguy4803
-* Daniel Wang, wan01271
+* Theo Nguyen, nguy4803@umn.edu
+* Daniel Wang, wan01271@umn.edu
+* Gunnar Jagodzinske, jagod023@umn.edu
+* Tina Tran, tran1149@umn.edu
 
 
 ## Key Features
@@ -20,15 +22,18 @@ CSCI 5117, Fall 2025, [assignment description](https://canvas.umn.edu/courses/51
 **Describe the most challenging features you implemented
 (one sentence per bullet, maximum 4 bullets):**
 
-* ...
+* Using Google Cloud Functions to service API calls for various website functions
+* Stats separation between literary/other types of media, and calculating and visualizing stats over time
+* Loading media titles dynamically depending on the category of media
+* Carousel and splash page view with stats and your media backlog list
 
 Which (if any) device integration(s) does your app support?
 
-* ...
+* Using voice/the device microphone to search for media
 
 Which (if any) progressive web app feature(s) does your app support?
 
-* ...
+* Add to Home Screen
 
 
 
@@ -71,7 +76,12 @@ along with a very brief caption:**
 Please do not document required libraries (e.g., VUE, Firebase, vuefire).**
 
 * Library or service name: description of use
-* ...
+* GSAP: Animation for Splash Page
+* PrimeVue: Select component for filtering
+* Google Cloud Functions: Storing API Keys, servicing API requests
+* Chart.js: To visualize profile data
+* DotLottie: To use for components/resources
+* VueUse: For voice/microphone usability
 
 **If there's anything else you would like to disclose about how your project
 relied on external code, expertise, or anything else, please disclose that
