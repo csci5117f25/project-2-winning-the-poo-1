@@ -477,6 +477,10 @@ function formatMediaTime(item) {
 
 <div class="chart" v-if="selectedCategory !== 'other'">
   <StatsLineChart :data="chartData" :label="chartLabel" />
+  <h4 class="title is-4 has-text-centered">
+    Total completion time of filtered media: {{ totalDays > 0 ? totalDays + (totalDays === 1 ? ' day' : ' days') + ', ' : '' }}{{ remainderHours > 0 ? remainderHours + (remainderHours === 1 ? ' hour' : ' hours') + ', ' : '' }}{{ remainderMinutes > 0 ? remainderMinutes + (remainderMinutes === 1 ? ' minute' : ' minutes') : '0 minutes' }}
+    <p v-if="totalFilteredPages > 0">{{ totalFilteredPages.toLocaleString() }} pages read</p>
+  </h4>
 </div>
 
 <template v-if="selectedCategory === 'other'">
@@ -495,14 +499,6 @@ function formatMediaTime(item) {
     </div>
   </div>
 </template>
-
-<h4 class="title is-4 has-text-centered data">
-  <p>Total time consumed filtered media: <br>
-  {{ totalDays > 0 ? totalDays + (totalDays === 1 ? ' day' : ' days') + ', ' : '' }}
-  {{ remainderHours > 0 ? remainderHours + (remainderHours === 1 ? ' hour' : ' hours') + ', ' : '' }}{{ remainderMinutes > 0 ? remainderMinutes + (remainderMinutes === 1 ? ' minute' : ' minutes') : '0 minutes' }}</p>
-  <p v-if="totalFilteredPages > 0">{{ totalFilteredPages.toLocaleString() }} pages read</p>
-</h4>
-
 </template>
 
 
@@ -510,7 +506,7 @@ function formatMediaTime(item) {
 .chart{
   max-width: 50vw;
   height: 50vh;
-  margin: 0 auto;
+  margin: 0 auto 3rem auto;
 }
 @media (max-width: 768px) {
   .chart {
