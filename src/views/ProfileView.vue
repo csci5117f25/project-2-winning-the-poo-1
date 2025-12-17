@@ -5,7 +5,22 @@ import { ref, computed } from 'vue'
 import { db } from '../firebase_conf'
 import CategoriesView from './AddView.vue'
 import StatsLineChart from '@/components/StatsLineChart.vue'
+import Select from 'primevue/select'
 
+const periodOptions = [
+  { label: 'This Month', value: 'month' },
+  { label: 'This Year', value: 'year' },
+  { label: 'All Time', value: 'all' },
+]
+
+const categoryOptions = [
+  { label: 'All Categories', value: 'all' },
+  { label: 'Movies', value: 'movie' },
+  { label: 'TV Shows', value: 'tv' },
+  { label: 'Books', value: 'book' },
+  { label: 'Video Games', value: 'game' },
+  { label: 'Other', value: 'other' },
+]
 
 const user = useCurrentUser()
 const queueRef = collection(db, 'users', user.value.uid, 'queue');
@@ -59,7 +74,7 @@ const filteredCompleted = computed(() => {
     const matchesPeriod = isWithinPeriod(item.completedAt, period.value)
     const matchesCategory =
       selectedCategory.value === 'all' ||
-      item.category === selectedCategory.value
+      item.media_type === selectedCategory.value
 
     return matchesPeriod && matchesCategory
   })
@@ -269,19 +284,9 @@ function dateCompletedAt(timestamp) {
     </div>
   </div>
   <div class="filters">
-  <select v-model="period">
-    <option value="month">This Month</option>
-    <option value="year">This Year</option>
-    <option value="all">All Time</option>
-  </select>
-
-  <select v-model="selectedCategory">
-    <option value="all">All Categories</option>
-    <option value="movie">Movies</option>
-    <option value="TV">TV</option>
-    <option value="book">Books</option>
-  </select>
-</div>
+    <Select v-model="period" :options="periodOptions" optionLabel="label" optionValue="value" size="small" placeholder="Select Period" />
+    <Select v-model="selectedCategory" :options="categoryOptions" optionLabel="label" optionValue="value" size="small" placeholder="Select Category" />
+  </div>
 
 <div class="chart">
   <StatsLineChart :data="chartData" />
@@ -334,5 +339,13 @@ h3, p {
 
 h4{
   margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 </style>

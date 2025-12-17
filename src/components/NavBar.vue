@@ -110,8 +110,8 @@ async function logout() {
   </div>
 
   <div class="navbar-end">
-    <div class="navbar-item is-flex is-align-items-center" style="gap: 0.75rem">
-      <button v-if="!user" class="button is-light is-small" @click="login">
+    <div class="navbar-item is-flex is-align-items-stretch" style="gap: 0.75rem; padding: 0;">
+      <button v-if="!user" class="button is-black" @click="login">
         Login / Signup
       </button>
 
@@ -122,7 +122,7 @@ async function logout() {
           </figure>
         </RouterLink>
 
-        <button class="button is-small is-light" @click="logout">
+        <button class="button is-black" @click="logout">
           Logout
         </button>
       </template>
@@ -163,9 +163,9 @@ async function logout() {
 <style scoped>
 .desktop-nav {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
-  padding: 0 0.75rem;
+  padding-left: 0.75rem;
   border-bottom: 1px solid white;
 }
 
@@ -175,6 +175,25 @@ async function logout() {
   gap: 0.25rem;
   flex-wrap: nowrap;
   white-space: nowrap;
+}
+
+.navbar .button.is-black:hover {
+  background-color: #00d1b2;
+  border-color: #00d1b2;
+}
+
+.navbar-end .navbar-item {
+  align-self: stretch;
+  display: flex;
+  align-items: stretch;
+}
+
+.navbar-end .button {
+  align-self: stretch;
+  border-radius: 0;
+  height: auto;
+  display: flex;
+  align-items: center;
 }
 
 .brand {
@@ -187,9 +206,15 @@ async function logout() {
   padding: 0.5rem 0.75rem;
 }
 
+.navbar-end .profile-link.navbar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
 
-.profile-link:hover {
-  background-color: transparent;
+.profile-link, .profile-link:hover, .profile-link:focus, .profile-link:active {
+  background-color: transparent !important;
 }
 
 /* no bottom nav on desktop */
