@@ -197,37 +197,6 @@ function getEffectiveMinutes(item) {
   return item.time || 0
 }
 
-function formatMediaTime(item) {
-  if (!item) {
-    return ''
-  }
-
-  switch (item.media_type) {
-    case 'book':
-      return `${item.time?.toLocaleString()} pages`
-
-    case 'tv':
-      const seasons = item.seasons
-      const episodes = item.episodes
-      let tvTime = []
-      if (seasons > 0) {
-        tvTime.push(`${seasons} season${seasons !== 1 ? 's': ''}`)
-      }
-      if (episodes > 0) {
-        tvTime.push(`${episodes} episode${episodes !== 1 ? 's': ''}`)
-      }
-      return tvTime.join(', ')
-
-      case 'other':
-        if (item.unit_type === 'pages') {
-          return `${item.time?.toLocaleString()} pages`
-        }
-        return `${item.time} minutes`
-    default:
-      return `${item.time} minutes`
-  }
-}
-
 const inProgressTime = computed(() => //I thought this needed curly brackets? idk man
   queueItems.value.filter(item => item.status === 'in-progress').reduce((accumulator, item) => accumulator + getEffectiveMinutes(item), 0)
 )
@@ -297,6 +266,58 @@ function dateCompletedAt(timestamp) {
     day: 'numeric',
     year: 'numeric',
   }).format(date)
+}
+
+
+function formatMediaTime(item) {
+  if (!item) {
+    return ''
+  }
+
+  switch (item.media_type) {
+    case 'book': {
+      return `${item.time?.toLocaleString()} pages`
+    }
+    case 'tv': {
+      const seasons = item.seasons
+      const episodes = item.episodes
+      let tvTime = []
+      if (seasons > 0) {
+        tvTime.push(`${seasons} season${seasons !== 1 ? 's': ''}`)
+      }
+      if (episodes > 0) {
+        tvTime.push(`${episodes} episode${episodes !== 1 ? 's': ''}`)
+      }
+      return tvTime.join(', ')
+    }
+    case 'game': {
+      if (item.time >= 60) {
+        const h = Math.floor(item.time / 60)
+        return `${h} hour${h !== 1 ? 's' : ''}`
+      }
+    }
+    case 'other': {
+      if (item.unit_type === 'pages') {
+        return `${item.time?.toLocaleString()} pages`
+      }
+      const mins = item.time || 0
+      if (mins >= 60) {
+        const h = Math.floor(mins / 60)
+        const m = mins % 60
+        return m > 0 ? `${h}h ${m}m` : `${h} hour${h !== 1 ? 's' : ''}`
+      }
+      return `${mins} minutes`
+    }
+    default: {
+      const mins = item.time || 0
+      if (mins >= 60) {
+        const h = Math.floor(mins / 60)
+        const m = mins % 60
+        return m > 0 ? `${h}h ${m}m` : `${h} hour${h !== 1 ? 's' : ''}`
+      }
+      return `${mins} minutes`
+    }
+  }
 }
 </script>
 
@@ -416,38 +437,37 @@ function dateCompletedAt(timestamp) {
       <p v-if="complete.length > 0">You've finished <strong>{{ completedTime }}</strong> minutes of content.</p>
       <p v-if="complete.length >= 0">That's <strong>{{ readableTime }}!</strong> {{ completedMessage }}</p>
     </div>
-    <div class="columns is-multiline">
-      <div v-for="item in complete" :key="item.id" class="column is-6-mobile is-4-tablet is-3-desktop">
-        <div class="card">
-          <template v-if="item.media_type === 'other'">
-            <div class="card-header-title py-1 px-2 is-centered">
-              <span class="is-clipped">
-                {{ item.name }}
-                <p class="has-text-centered has-text-grey">{{  formatMediaTime(item)  }}</p>
-              </span>
+
+    <div class="mb-2">
+        <div class="scroll-row mt-3">
+          <div v-for="item in complete" :key="item.id" class="card scroll-card">
+            <div class="card-image" v-if="item.image_url">
+              <figure class="image is-3by4">
+                <img :src="item.image_url" alt="Cover Image" class="cover-img" />
+              </figure>
             </div>
-          </template>
-            <RouterLink v-else :to="{ name: 'media_w_id', params:
-              { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type }}" class="card-header-title py-1 px-2 is-centered">
-              <span class="is-clipped">
-                {{ item.name }}
-                <p class="has-text-centered has-text-grey">{{ formatMediaTime(item) }}</p>
-              </span>
-            </RouterLink>
-          <div class="card-image">
-            <figure class="image is-3by4">
-              <img v-if="item.image_url" :src="item.image_url" alt="Cover Image"/>
-            </figure>
-          </div>
-          <!-- Completed Date -->
-          <p class="is-size-7 has-text-grey">
-            Completed: <strong>{{ dateCompletedAt(item.completedAt) }}</strong>
-          </p>
-          <div class="is-flex is-justify-content-center is-align-items-center py-0">
-            <button class="button is-small is-centered is-danger is-light" @click="unfinishMedia(item.id)">Mark Incomplete</button>
+
+            <div class="card-content">
+              <p class="title is-6 mb-2">
+
+                <template v-if="item.media_type === 'other'">
+                  <span class="has-text-dark">{{  item.name }}</span>
+                </template>
+                <RouterLink v-else :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
+                  {{ item.name }}
+                </RouterLink>
+              </p>
+              <p class="is-size-7 has-text-grey mb-3">{{ formatMediaTime(item) }} <br></br> {{ dateCompletedAt(item.completedAt) }}</p>
+
+
+              <div class="buttons are-small is-flex is-flex-direction-column">
+                <button class="button is-danger is-light is-fullwidth" @click="unfinishMedia(item.id)">
+                  Remove
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
   <div class="filters">
@@ -476,8 +496,10 @@ function dateCompletedAt(timestamp) {
   </div>
 </template>
 
-<h4 class="title is-4 has-text-centered">
-  Total time consumed filtered media: {{ totalDays > 0 ? totalDays + (totalDays === 1 ? ' day' : ' days') + ', ' : '' }}{{ remainderHours > 0 ? remainderHours + (remainderHours === 1 ? ' hour' : ' hours') + ', ' : '' }}{{ remainderMinutes > 0 ? remainderMinutes + (remainderMinutes === 1 ? ' minute' : ' minutes') : '0 minutes' }}
+<h4 class="title is-4 has-text-centered data">
+  <p>Total time consumed filtered media: <br>
+  {{ totalDays > 0 ? totalDays + (totalDays === 1 ? ' day' : ' days') + ', ' : '' }}
+  {{ remainderHours > 0 ? remainderHours + (remainderHours === 1 ? ' hour' : ' hours') + ', ' : '' }}{{ remainderMinutes > 0 ? remainderMinutes + (remainderMinutes === 1 ? ' minute' : ' minutes') : '0 minutes' }}</p>
   <p v-if="totalFilteredPages > 0">{{ totalFilteredPages.toLocaleString() }} pages read</p>
 </h4>
 
@@ -526,6 +548,10 @@ h4{
   margin-bottom: 20px;
 }
 
+.data {
+  margin-bottom: 5rem;
+}
+
 .filters {
   display: flex;
   justify-content: center;
@@ -538,5 +564,49 @@ h4{
   max-width: 100%;
   height: 35vh;
   margin: 0 auto;
+}
+
+.scroll-row {
+  display: flex;
+  overflow-x: auto;
+  padding: 0.75rem 0.25rem;
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
+}
+
+.scroll-card {
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  flex: 0 0 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.scroll-card .card-content .title:not(:last-child) {
+  margin-bottom: 0.25rem !important;
+}
+
+.scroll-card .card-content p.is-size-7 {
+  margin-top: 0;
+}
+
+@media (max-width: 600px) {
+  .scroll-card {
+    flex-basis: 180px;
+  }
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.buttons {
+  margin-top: auto;
 }
 </style>
