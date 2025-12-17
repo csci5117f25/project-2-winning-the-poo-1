@@ -89,7 +89,7 @@ const deleteMedia = async (itemId) => {
 
             <div class="card-content">
               <p class="title is-6 mb-2">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }" class="has-text-dark">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.id, type: item.media_type }, query: {type: item.media_type} }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>
@@ -134,7 +134,7 @@ const deleteMedia = async (itemId) => {
             <div class="card-content">
               <div class="is-flex is-justify-content-space-between">
               <p class="title is-6 mb-2">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.id } }" class="has-text-dark">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.id}, query: {type: item.media_type} }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>
