@@ -8,6 +8,7 @@ const user = useCurrentUser()
 
 let inProgress = null
 let queue = null
+let complete = null
 
 
 if (user.value) {
@@ -19,6 +20,8 @@ if (user.value) {
   const queueQuery = query(queueRef, where("status", "==", "queued"))
   queue = useCollection(queueQuery)
 
+  const completeQuery = query(queueRef, where("status", "==", "complete"))
+  complete = useCollection(completeQuery)
 }
 
 const timeLeftProg = computed(() => //I thought this needed curly brackets? idk man
@@ -27,6 +30,10 @@ const timeLeftProg = computed(() => //I thought this needed curly brackets? idk 
 
 const timeLeftQueue = computed(() => //I thought this needed curly brackets? idk man
   queue?.value.reduce((accumulator, item) => accumulator + item.time, 0)
+)
+
+const timeLeftComplete = computed(() => //I thought this needed curly brackets? idk man
+  complete?.value.reduce((accumulator, item) => accumulator + item.time, 0)
 )
 
 const startMedia = async (itemId) => {
@@ -103,7 +110,6 @@ const deleteMedia = async (itemId) => {
                 <button class="button is-danger is-light is-fullwidth" @click="requeueMedia(item.id)">
                   Remove
                 </button>
-                <!-- add edit progress? -->
               </div>
             </div>
           </div>
@@ -114,11 +120,13 @@ const deleteMedia = async (itemId) => {
         </div>
       </div>
 
+
+      <!-- Queue -->
       <div class="mb-2">
         <div class="is-flex is-align-items-center" style="gap: 1rem;">
           <h2 class="title is-5 mb-0">Queue</h2>
 
-          <p v-if="queue && queue.length !== 0" class="has-text-grey is-size-8 mb-0" >
+          <p v-if="Queue && Queue.length !== 0" class="has-text-grey is-size-8 mb-0" >
             About <strong>{{ timeLeftQueue }}</strong> minutes total
           </p>
         </div>
@@ -156,7 +164,49 @@ const deleteMedia = async (itemId) => {
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Completed Section -->
+      <div class="mb-2">
+        <div class="is-flex is-align-items-center" style="gap: 1rem;">
+          <h2 class="title is-5 mb-0">Completed</h2>
+
+          <p v-if="complete && complete.length !== 0" class="has-text-grey is-size-8 mb-0" >
+            About <strong>{{ timeLeftComplete }}</strong> minutes total
+          </p>
+        </div>
+
+        <div class="scroll-row mt-3">
+          <div v-for="item in complete" :key="item.id" class="card scroll-card">
+            <div class="card-image" v-if="item.image_url">
+              <figure class="image is-3by4">
+                <img :src="item.image_url" alt="Cover Image" class="cover-img" />
+              </figure>
+            </div>
+
+            <div class="card-content">
+              <p class="title is-6 mb-0">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.tmdb_id || item.rawg_id || item.gbooks_id }, query: {type: item.media_type} }" class="has-text-dark">
+                  {{ item.name }}
+                </RouterLink>
+              </p>
+              <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
+
+
+              <div class="buttons are-small is-flex is-flex-direction-column">
+                <button class="button is-danger is-light is-fullwidth" @click="deleteMedia(item.id)">
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="complete && complete.length === 0" class="notification is-light scroll-empty">
+            <p class="mb-0">Nothing completed yet. Start something from your queue!</p>
+          </div>
+        </div>
+      </div>
+
+      </div>
   </section>
 </template>
 
@@ -179,6 +229,16 @@ const deleteMedia = async (itemId) => {
   height: 100%;
 }
 
+.scroll-card .card-content .title:not(:last-child) {
+  margin-bottom: 0.25rem !important;
+}
+
+.scroll-card .card-content p.is-size-7 {
+  margin-top: 0;
+}
+
+
+
 .cover-img {
   object-fit: cover;
 }
@@ -196,6 +256,10 @@ const deleteMedia = async (itemId) => {
   background: rgba(0, 0, 0, 0.2);
 }
 
+.title {
+  padding: 0;
+}
+
 @media (max-width: 600px) {
   .scroll-card {
     flex-basis: 180px;
@@ -209,15 +273,15 @@ const deleteMedia = async (itemId) => {
 }
 
 .card-content .title {
+  padding: 0;
+  margin: 0;
   display: -webkit-box;
-  line-clamp: 2;
+  line-height: 1.2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: normal;
-  height: 3em;
-  margin-bottom: 1em;
 }
 
 .buttons {
