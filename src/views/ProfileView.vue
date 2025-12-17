@@ -22,6 +22,18 @@ const totalFilteredMinutes = computed(() => {
   )
 })
 
+const totalDays = computed(() => {
+  return Math.floor(totalFilteredMinutes.value / 1440)
+})
+
+const remainderHours = computed(() => {
+  return Math.floor((totalFilteredMinutes.value % 1440)/60)
+})
+
+const remainderMinutes = computed(() => {
+  return (Math.floor(totalFilteredMinutes.value % 60))
+})
+
 function isWithinPeriod(timestamp, period) {
   if (!timestamp) return false
 
@@ -93,7 +105,7 @@ const completedTime = computed(() => //I thought this needed curly brackets? idk
 )
 
 const completedMessage = computed(() => {
-  if (completedTime.value >= 1440) return "That's more than a day- keep it up!"
+  if (completedTime.value >= 1440) return "More than a day- wow, keep it up!"
   if (completedTime.value >= 1000) return "Amazing!"
   if (completedTime.value >= 660) return "That's longer than it would take to watch the enture extended Lord of the Rings trilogy!"
   if (completedTime.value >= 300) return "Wow, That's a lot of content!"
@@ -258,7 +270,7 @@ function dateCompletedAt(timestamp) {
 </div>
 
 <h4 class="title is-4 has-text-centered">
-  Total time consuming media: {{ totalFilteredMinutes }} minutes
+  Total time consuming filtered media: {{ totalDays }} days, {{ remainderHours }} hours, {{ remainderMinutes }} minutes.
 </h4>
 
 </template>
