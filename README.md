@@ -4,13 +4,13 @@ CSCI 5117, Fall 2025, [assignment description](https://canvas.umn.edu/courses/51
 
 ## App Info:
 
-* Team Name: winning the poo
+* Team Name: Winning the poo
 * App Name: MediaQ
 * App Link: <https://project-2-wtp.firebaseapp.com/>
 
 ### Students
 
-* wendy meng, meng0219@umn.edu
+* Wendy Meng, meng0219@umn.edu
 * Theo Nguyen, nguy4803@umn.edu
 * Daniel Wang, wan01271@umn.edu
 * Gunnar Jagodzinske, jagod023@umn.edu
