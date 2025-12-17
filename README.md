@@ -103,7 +103,7 @@ My Profile Page Graph (mobile)
 **Document integrations with 3rd Party code or services here.
 Please do not document required libraries (e.g., VUE, Firebase, vuefire).**
 
-* Library or service name: description of use
+* Fetch: Calling APIs
 * GSAP: Animation for Splash Page
 * PrimeVue: Select component for filtering
 * Google Cloud Functions: Storing API Keys, servicing API requests
