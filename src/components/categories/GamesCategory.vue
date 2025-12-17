@@ -122,7 +122,7 @@ const addtoBacklog = async (gameData) => {
     const backlogItem = {
       rawg_id: details.id,
       name: details.name,
-      time: details.playtime || 0,
+      time: details.playtime * 60 || 0,
       status: 'queued',
       overview: details.description_raw || details.description || '',
       release_date: details.released || '',
