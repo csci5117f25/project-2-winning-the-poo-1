@@ -66,7 +66,35 @@ Search Page (desktop + mobile)
 **[Add a screenshot of each key page](https://stackoverflow.com/questions/10189356/how-to-add-screenshot-to-readmes-in-github-repository)
 along with a very brief caption:**
 
-![](https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif)
+![Splash Page (desktop)](/public/pc_splash_page.png "Splash Page (desktop)")
+Splash Page (desktop)
+
+![Add Media Page (desktop)](/public/pc_add_page.png "Add Media Page (desktop)")
+Add Media Page (desktop)
+
+![My List Page (desktop)](/public/pc_list_page.png "My List Page (desktop)")
+My List Page (desktop)
+
+![My Profile Page Stats (desktop)](/public/pc_profile_page_1.png "My Profile Page Stats (desktop)")
+My Profile Page Stats (desktop)
+
+![My Profile Page Graph (desktop)](/public/pc_profile_page_2.png "My Profile Page Graph (desktop)")
+My Profile Page Graph (desktop)
+
+![Splash Page (mobile)](/public/mobile_splash_page.png "Splash Page (mobile)")
+Splash Page (mobile)
+
+![Add Media Page (mobile)](/public/mobile_add_page.png "Add Media Page (mobile)")
+Add Media Page (mobile)
+
+![My List Page (mobile)](/public/mobile_list_page.png "My List Page (mobile)")
+My List Page (mobile)
+
+![My Profile Page Stats (mobile)](/public/mobile_profile_page_1.png "My Profile Page Stats (mobile)")
+My Profile Page Stats (mobile)
+
+![My Profile Page Graph (mobile)](/public/mobile_profile_page_2.png "My Profile Page Graph (mobile)")
+My Profile Page Graph (mobile)
 
 
 
