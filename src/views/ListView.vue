@@ -67,6 +67,44 @@ const deleteMedia = async (itemId) => {
 
   await deleteDoc(itemRef)
 }
+
+function formatMediaTime(item) {
+  if (!item) {
+    return ''
+  }
+
+  switch (item.media_type) {
+    case 'book':
+      return `${item.time?.toLocaleString()} pages`
+
+    case 'tv':
+      const seasons = item.seasons
+      const episodes = item.episodes
+      let tvTime = []
+      if (seasons > 0) {
+        tvTime.push(`${seasons} season${seasons !== 1 ? 's': ''}`)
+      }
+      if (episodes > 0) {
+        tvTime.push(`${episodes} episode${episodes !== 1 ? 's': ''}`)
+      }
+      return tvTime.join(', ')
+
+    case 'game':
+      if (item.time >= 60) {
+        const h = Math.floor(item.time / 60)
+        return `${h} hour${h !== 1 ? 's' : ''}`
+      }
+
+    default:
+      const mins = item.time || 0
+      if (mins >= 60) {
+        const h = Math.floor(mins / 60)
+        const m = mins % 60
+        return m > 0 ? `${h}h ${m}m` : `${h} hour${h !== 1 ? 's' : ''}`
+      }
+      return `${mins} minutes`
+  }
+}
 </script>
 
 <template>
@@ -96,12 +134,12 @@ const deleteMedia = async (itemId) => {
 
             <div class="card-content">
               <p class="title is-6 mb-2">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.tmdb_id || item.rawg_id || item.gbooks_id, }, query: {type: item.media_type} }" class="has-text-dark">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>
 
-              <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
+              <p class="is-size-7 has-text-grey mb-3">{{ formatMediaTime(item) }}</p>
 
               <div class="buttons are-small is-flex is-flex-direction-column">
                 <button class="button is-primary is-fullwidth" @click="finishMedia(item.id)">
@@ -141,12 +179,12 @@ const deleteMedia = async (itemId) => {
 
             <div class="card-content">
               <p class="title is-6 mb-2">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.tmdb_id || item.rawg_id || item.gbooks_id }, query: {type: item.media_type} }" class="has-text-dark">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>
 
-              <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
+              <p class="is-size-7 has-text-grey mb-3">{{formatMediaTime(item) }}</p>
 
               <div class="buttons are-small is-flex is-flex-direction-column">
                 <button class="button is-primary is-fullwidth" @click="startMedia(item.id)">
@@ -185,11 +223,11 @@ const deleteMedia = async (itemId) => {
 
             <div class="card-content">
               <p class="title is-6 mb-0">
-                <RouterLink :to="{ name: 'media_w_id', params: { id: item.tmdb_id || item.rawg_id || item.gbooks_id }, query: {type: item.media_type} }" class="has-text-dark">
+                <RouterLink :to="{ name: 'media_w_id', params: { id: item.media_type === 'book' ? item.gbooks_id : item.media_type === 'game' ? item.rawg_id : item.tmdb_id }, query: { type: item.media_type } }" class="has-text-dark">
                   {{ item.name }}
                 </RouterLink>
               </p>
-              <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
+              <p class="is-size-7 has-text-grey mb-3">{{ formatMediaTime(item) }}</p>
 
 
               <div class="buttons are-small is-flex is-flex-direction-column">

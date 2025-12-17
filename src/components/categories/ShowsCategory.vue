@@ -106,6 +106,8 @@ const addToBacklog = async (showData) => {
       rating: details.vote_average,
       image_url: details.poster_path ? `https://image.tmdb.org/t/p/w500${details.poster_path}` : null,
       media_type: 'tv',
+      seasons: details.number_of_seasons,
+      episodes: details.number_of_episodes,
     };
 
     await addDoc(userItems, backlogItem);

@@ -3,7 +3,11 @@ import { onMounted, watch, ref } from 'vue'
 import { Chart } from 'chart.js/auto'
 
 const props = defineProps({
-  data: Array
+  data: Array,
+  label: {
+    type: String,
+    default: 'Minutes Watched'
+  }
 })
 
 const canvasRef = ref(null)
@@ -18,7 +22,7 @@ function renderChart() {
       labels: props.data.map(d => d.label),
       datasets: [
         {
-          label: 'Minutes Watched',
+          label: props.label,
           data: props.data.map(d => d.value),
           fill: false,
           tension: 0.3,
@@ -29,7 +33,7 @@ function renderChart() {
 }
 
 onMounted(renderChart)
-watch(() => props.data, renderChart)
+watch(() => [props.data, props.label], renderChart)
 </script>
 
 <template>
