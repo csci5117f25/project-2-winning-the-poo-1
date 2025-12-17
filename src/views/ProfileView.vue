@@ -479,12 +479,6 @@ function dateCompletedAt(timestamp) {
     </div>
   </div>
 </template>
-
-<h4 class="title is-4 has-text-centered">
-  Total time consumed filtered media: {{ totalDays > 0 ? totalDays + (totalDays === 1 ? ' day' : ' days') + ', ' : '' }}{{ remainderHours > 0 ? remainderHours + (remainderHours === 1 ? ' hour' : ' hours') + ', ' : '' }}{{ remainderMinutes > 0 ? remainderMinutes + (remainderMinutes === 1 ? ' minute' : ' minutes') : '0 minutes' }}
-  <p v-if="totalFilteredPages > 0">{{ totalFilteredPages.toLocaleString() }} pages read</p>
-</h4>
-
 </template>
 
 
