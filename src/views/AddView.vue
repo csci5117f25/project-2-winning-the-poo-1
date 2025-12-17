@@ -6,6 +6,7 @@ import MoviesCategory from '../components/categories/MoviesCategory.vue';
 import ShowsCategory from '../components/categories/ShowsCategory.vue';
 import BooksCategory from '../components/categories/BooksCategory.vue';
 import GamesCategory from '../components/categories/GamesCategory.vue';
+import OtherCategory from '../components/categories/OtherCategory.vue';
 
 const activeTab = ref('MOVIES');
 const searchQuery = ref('');
@@ -34,6 +35,7 @@ const componentMap = {
   'TV SHOWS': ShowsCategory,
   'BOOKS': BooksCategory,
   'GAMES': GamesCategory,
+  'OTHER': OtherCategory,
 }
 
 const activeComponent = computed(() => componentMap[activeTab.value])
