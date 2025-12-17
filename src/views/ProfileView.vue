@@ -180,7 +180,13 @@ function dateCompletedAt(timestamp) {
             <div class="column is-third">
               <div class="box">
                 <p class="heading">In Progress</p>
-                <p v-if="inProgressTime > 0" class="title">
+                <p v-if="inProgressTime >= 1440" class="title">
+                  {{ Math.floor(inProgressTime/1440) }} {{ Math.floor(inProgressTime/1440) <= 1 ? 'day' : 'days' }}, {{ Math.floor((inProgressTime%1440)/60) }} {{ Math.floor((inProgressTime%1440)/60) <= 1 ? 'hour' : 'hours' }}, {{ inProgressTime%60 }} {{ inProgressTime%60 <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else-if="inProgressTime >= 60" class="title">
+                  {{ Math.floor(inProgressTime/60) }} {{ Math.floor(inProgressTime/60) <= 1 ? 'hour' : 'hours' }}, {{ inProgressTime%60 }} {{ inProgressTime%60 <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else-if="inProgressTime > 0" class="title">
                   {{ inProgressTime }} {{ inProgressTime <= 1 ? 'min' : 'mins' }}
                 </p>
                 <p v-else>
@@ -192,7 +198,13 @@ function dateCompletedAt(timestamp) {
             <div class="column is-third">
               <div class="box">
                 <p class="heading">Queued</p>
-                <p v-if="queueTime > 0" class="title">
+                <p v-if="queueTime >= 1440" class="title">
+                  {{ Math.floor(queueTime/1440) }} {{ Math.floor(queueTime/1440) <= 1 ? 'day' : 'days' }}, {{ Math.floor((queueTime%1440)/60) }} {{ Math.floor((queueTime%1440)/60) <= 1 ? 'hour' : 'hours' }}, {{ queueTime%60 }} {{ queueTime%60 <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else-if="queueTime >= 60" class="title">
+                  {{ Math.floor(queueTime/60) }} {{ Math.floor(queueTime/60) <= 1 ? 'hour' : 'hours' }}, {{ queueTime%60 }} {{ queueTime%60 <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else-if="queueTime > 0" class="title">
                   {{ queueTime }} {{ queueTime <= 1 ? 'min' : 'mins' }}
                 </p>
                 <p v-else>
@@ -204,7 +216,13 @@ function dateCompletedAt(timestamp) {
             <div class="column is-third">
               <div class="box">
                 <p class="heading">Completed</p>
-                <p v-if="completedTime > 0" class="title">
+                <p v-if="completedTime >= 1440" class="title">
+                  {{ Math.floor(completedTime/1440) }} {{ Math.floor(completedTime/1440) <= 1 ? 'day' : 'days' }}, {{ Math.floor((completedTime%1440)/60) }} {{ Math.floor((completedTime%1440)/60) <= 1 ? 'hour' : 'hours' }}, {{ completedTime%60 }} {{ completedTime%60 <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else-if="completedTime >= 60" class="title">
+                  {{ Math.floor(completedTime/60) }} {{ Math.floor(completedTime/60) <= 1 ? 'hour' : 'hours' }}, {{ completedTime%60 }} {{ completedTime%60 <= 1 ? 'min' : 'mins' }}
+                </p>
+                <p v-else-if="completedTime > 0" class="title">
                   {{ completedTime }} {{ completedTime <= 1 ? 'min' : 'mins' }}
                 </p>
                 <p v-else>
@@ -270,7 +288,7 @@ function dateCompletedAt(timestamp) {
 </div>
 
 <h4 class="title is-4 has-text-centered">
-  Total time consuming filtered media: {{ totalDays }} days, {{ remainderHours }} hours, {{ remainderMinutes }} minutes.
+  Total time consuming filtered media: {{ totalDays <= 0 ? '' : totalDays  }}{{ totalDays == 1 ? ' day':'' }}{{ totalDays > 1 ? ' days':'' }}, {{ remainderHours <= 0 ? '' : remainderHours  }}{{ remainderHours == 1 ? ' hour':'' }}{{ remainderHours > 1 ? ' hours':'' }}, {{ remainderMinutes <= 0 ? '' : remainderMinutes  }}{{ remainderMinutes == 1 ? ' minute':'' }}{{ remainderMinutes > 1 ? ' minutes':'' }}.
 </h4>
 
 </template>
