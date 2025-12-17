@@ -3,7 +3,6 @@ import { auth } from '../firebase_conf'
 import { onAuthStateChanged } from 'firebase/auth'
 import AddView from '@/views/AddView.vue'
 import HomeView from '@/views/HomeView.vue'
-import CategoriesView from '@/views/CategoriesView.vue'
 import ListView from '@/views/ListView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import MediaId from '@/views/MediaId.vue'
@@ -42,11 +41,6 @@ const router = createRouter({
     {
       path: '/add',
       component: AddView,
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/categories',
-      component: CategoriesView,
       meta: { requiresAuth: true },
     },
     {

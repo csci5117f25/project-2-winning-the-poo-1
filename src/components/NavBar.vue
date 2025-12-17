@@ -105,7 +105,6 @@ async function logout() {
 
     <div v-if="user" class="nav-links is-flex">
       <RouterLink to="/add" class="navbar-item link" active-class="is-active ">ADD</RouterLink>
-      <RouterLink to="/categories" class="navbar-item link" active-class="is-active">CATEGORIES</RouterLink>
       <RouterLink to="/list" class="navbar-item link" active-class="is-active">LIST</RouterLink>
     </div>
   </div>
@@ -142,13 +141,6 @@ async function logout() {
     <RouterLink to="/add" class="tab">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path stroke-width="2" d="M12 5v14m7-7H5" />
-      </svg>
-    </RouterLink>
-
-    <RouterLink to="/categories" class="tab">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="11" cy="11" r="8" stroke-width="2" />
-        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2" />
       </svg>
     </RouterLink>
 

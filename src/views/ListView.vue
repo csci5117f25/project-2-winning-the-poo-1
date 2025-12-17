@@ -97,13 +97,13 @@ const deleteMedia = async (itemId) => {
               <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
 
               <div class="buttons are-small is-flex is-flex-direction-column">
+                <button class="button is-primary is-fullwidth" @click="finishMedia(item.id)">
+                  Mark Complete
+                </button>
                 <button class="button is-danger is-light is-fullwidth" @click="requeueMedia(item.id)">
                   Remove
                 </button>
                 <!-- add edit progress? -->
-                <button class="button is-success is-fullwidth" @click="finishMedia(item.id)">
-                  Mark Complete
-                </button>
               </div>
             </div>
           </div>
@@ -132,7 +132,6 @@ const deleteMedia = async (itemId) => {
             </div>
 
             <div class="card-content">
-              <div class="is-flex is-justify-content-space-between">
               <p class="title is-6 mb-2">
                 <RouterLink :to="{ name: 'media_w_id', params: { id: item.id}, query: {type: item.media_type} }" class="has-text-dark">
                   {{ item.name }}
@@ -140,7 +139,6 @@ const deleteMedia = async (itemId) => {
               </p>
 
               <p class="is-size-7 has-text-grey mb-3">{{ item.time }} minutes</p>
-              </div>
 
               <div class="buttons are-small is-flex is-flex-direction-column">
                 <button class="button is-primary is-fullwidth" @click="startMedia(item.id)">
@@ -172,10 +170,13 @@ const deleteMedia = async (itemId) => {
 }
 
 .scroll-card {
+  display: flex;
+  flex-direction: column;
   scroll-snap-align: start;
   flex: 0 0 220px;
   border-radius: 14px;
   overflow: hidden;
+  height: 100%;
 }
 
 .cover-img {
@@ -199,5 +200,27 @@ const deleteMedia = async (itemId) => {
   .scroll-card {
     flex-basis: 180px;
   }
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content .title {
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: normal;
+  height: 3em;
+  margin-bottom: 1em;
+}
+
+.buttons {
+  margin-top: auto;
 }
 </style>

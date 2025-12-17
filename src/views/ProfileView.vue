@@ -3,7 +3,7 @@ import { useCurrentUser, useCollection } from 'vuefire'
 import { collection, query, where, doc, updateDoc } from 'firebase/firestore'
 import { ref, computed } from 'vue'
 import { db } from '../firebase_conf'
-import CategoriesView from './CategoriesView.vue'
+import CategoriesView from './AddView.vue'
 import StatsLineChart from '@/components/StatsLineChart.vue'
 
 
