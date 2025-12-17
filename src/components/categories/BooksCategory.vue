@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
 import { collection, addDoc, getDocs, query as fsQuery, where } from 'firebase/firestore'
 import { db, auth } from '../../firebase_conf'
@@ -9,6 +10,7 @@ import checkmarkJson from '../../assets/checkmark.json'
 
 const props = defineProps(['query'])
 const items = ref([])
+const route = useRoute()
 
 // Track added book IDs
 const addedBookIds = ref(new Set())
@@ -166,9 +168,11 @@ onMounted(async () => {
     <div class="columns is-multiline is-mobile">
       <div v-for="item in items" :key="item.id" class="column is-6-mobile is-4-tablet is-2-desktop">
         <div class="media-card-wrapper">
-          <figure class="image is-2by3">
-            <img :src="item.image || placeholder" class="poster-image" alt="Book Cover" />
-          </figure>
+          <RouterLink :to="{ name: 'media_w_id', params: { id: item.id }, query: { ...route.query, type: 'book' } }">
+            <figure class="image is-2by3">
+              <img :src="item.image || placeholder" class="poster-image" alt="Book Cover" />
+            </figure>
+          </RouterLink>
 
           <button class="button is-dark is-rounded is-small floating-btn"
             :class="{ 'is-animating': uiState[item.id]?.justAdded }" @click="addtoBacklog(item)"
